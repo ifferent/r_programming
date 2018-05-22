@@ -1,0 +1,15 @@
+################################
+#這是註解
+#註解很重要
+show_repeat<-rep(3,5)#例如可以解釋這行意思是重複3，5次
+show_repeat #所以可以幫助你解釋每一行在做甚麼
+###############################
+#也可以像上面這樣，幫你隔開程式，當成程式整理
+a_set<-c(0.5,-3,25,78,10)
+a_seq<-c(1:5)
+a_set.string<-c("Hellow","everyone","!")
+null_set<-NA
+a_mixture<-list(a_set,a_seq,a_set.string,null_set)
+#所以要養成寫註解的好習慣，因為你不能保證
+#甚麼時候忘記自己寫的程式是甚麼意思
+mean(sample(1:sample(1:exp(5),1), sample(1:log(1500,exp(1)),1)))

@@ -29,9 +29,14 @@ select(mych2.csv,year:dep_time,air_time:time_hour)
 
 summarize(mych2.csv, delay=mean(dep_delay, na.rm=TRUE))  
 
-by_day<-group_by(mych2.csv, year ,month, day)
-summarize(by_day, delay=mean(dep_delay, na.rm=TRUE))  
+by_day<-group_by(mych2.csv, day)#每年每月的同一天
+sum.by_day<-summarize(by_day, delay=mean(dep_delay, na.rm=TRUE))  
 
+by_day_mon<-group_by(mych2.csv, month, day)#每年的同一天同一月
+sum.by_day_mon<-summarize(by_day_mon, delay=mean(dep_delay, na.rm=TRUE))  
+
+by_day_mon_year<-group_by(mych2.csv, year ,month, day)
+sum.by_day_mon_year<-summarize(by_day_mon_year, delay=mean(dep_delay, na.rm=TRUE))  
 
 
 

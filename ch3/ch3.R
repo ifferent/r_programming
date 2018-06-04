@@ -4,10 +4,10 @@ library(plotrix)
 
 ############################################檔案載入與設定################################################
 
-mysample.exp1_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(年齡).csv"
-mysample.exp1_1_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按中斷工作或上班時臨時趕回家分(年齡).csv"
-mysample.exp2_path="presentation_sample_ppt/sample_data/myself/ch3_exp1.csv"
-mysample.exp3_path="presentation_sample_ppt/sample_data/myself/ch3_exp2.csv"
+mysample.exp1_path="ch3/sample_data/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(年齡).csv"
+mysample.exp1_1_path="ch3/sample_data/最近一年內曾因家庭緣故影響工作之情形－按中斷工作或上班時臨時趕回家分(年齡).csv"
+mysample.exp2_path="ch3/sample_data/ch3_exp1.csv"
+mysample.exp3_path="ch3/sample_data/ch3_exp2.csv"
 
 mysample.exp1<-read_csv(mysample.exp1_path,col_names = FALSE)
 mysample.exp1_nocolname<-read_csv(mysample.exp1_1_path,col_names=TRUE)

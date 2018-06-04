@@ -1,3 +1,5 @@
+source("common/check_package.R")
+
 library("readr")
 library("dplyr")
 

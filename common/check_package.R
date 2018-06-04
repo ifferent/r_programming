@@ -1,0 +1,24 @@
+if(!require(readr))
+{
+  install.packages("readr")
+}
+if(!require(dplyr))
+{
+  install.packages("dplyr")
+}
+if(!require(tibble))
+{
+  install.packages("tibble")
+}
+if(!require(plotrix))
+{
+  install.packages("plotrix")
+}
+if(!require(ggplot2))
+{
+  install.packages("ggplot2")
+}
+if(!require(lubridate))
+{
+  install.packages("lubridate")
+}

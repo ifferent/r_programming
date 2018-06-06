@@ -6,13 +6,13 @@ library(lubridate)
 
 ############################################檔案載入與設定################################################
 
-ch4sample.exp1_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(年齡).csv"
-ch4sample.exp1_1_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按中斷工作或上班時臨時趕回家分(年齡).csv"
-#ch4sample.exp1_2_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(ggplot2).csv"
-ch4sample.exp2_path="presentation_sample_ppt/sample_data/myself/ch3_exp1.csv"
-ch4sample.exp3_path="presentation_sample_ppt/sample_data/myself/ch3_exp2.csv"
-ch4sample.exp4_path="presentation_sample_ppt/sample_data/myself/ch3_exp3.csv"
-ch4sample.exp5_path="presentation_sample_ppt/sample_data/消費者物價基本分類暨項目群指數/消費者物價基本分類暨項目群指數.csv"
+ch4sample.exp1_path="ch4/sample_data/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(年齡).csv"
+ch4sample.exp1_1_path="ch4/sample_data/最近一年內曾因家庭緣故影響工作之情形－按中斷工作或上班時臨時趕回家分(年齡).csv"
+#ch4sample.exp1_2_path="ch4/sample_data/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(ggplot2).csv"
+ch4sample.exp2_path="ch4/sample_data/ch3_exp1.csv"
+ch4sample.exp3_path="ch4/sample_data/ch3_exp2.csv"
+ch4sample.exp4_path="ch4/sample_data/ch3_exp3.csv"
+ch4sample.exp5_path="ch4/sample_data/消費者物價基本分類暨項目群指數.csv"
 
 ch4sample.exp1<-read_csv(ch4sample.exp1_path,col_names = TRUE)
 ch4sample.exp1_1<-read_csv(ch4sample.exp1_1_path,col_names=TRUE)

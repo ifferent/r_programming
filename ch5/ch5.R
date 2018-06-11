@@ -31,8 +31,31 @@ transcript$score<-ifelse(student.score>100,100,student.score)
 mean(transcript$score)
 ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
 
-
 ###############################################################################
+
+student_score.chinese<-round(rnorm(100,mean=80,sd=10),0)
+student_score.math<-round(rnorm(100,mean=60,sd=30),0)
+student_score.history<-round(rnorm(100,mean=90,sd=5),0)
+student_score.geo<-round(rnorm(100,mean=70,sd=20),0)
+
+transcript <- tibble("座號"=1:100,"國文"=student_score.chinese,"數學"=student_score.math,"歷史"=student_score.history,"地理"=student_score.geo)
+transcript$國文<-ifelse(student_score.chinese>100,100,student_score.chinese)
+transcript$數學<-ifelse(student_score.math>100,100,student_score.math)
+transcript$數學<-ifelse(student_score.math<0,0,student_score.math)
+transcript$歷史<-ifelse(student_score.history>100,100,student_score.history)
+transcript$地理<-ifelse(student_score.geo>100,100,student_score.geo)
+
+mean(transcript$國文)
+mean(transcript$數學)
+mean(transcript$歷史)
+mean(transcript$地理)
+
+ggplot(transcript,aes(國文))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+ggplot(transcript,aes(數學))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+ggplot(transcript,aes(歷史))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+ggplot(transcript,aes(地理))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+
+write_excel_csv(transcript,"成績單_new.csv")
 
 ###############################################################################
 taxrelation.reg_taipei<-select(taxrelation.table_taipei,"公司家數","營業稅年度總稅收")

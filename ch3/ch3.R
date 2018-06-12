@@ -98,9 +98,9 @@ plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",
 plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch='*')
 plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch='%')
 
-plot(select(mysample.exp2,國文,數學,歷史,地理))
+plot(select(mysample.exp2,"國文","數學","歷史","地理"))
 plot(mysample.exp2[,2:5])
-plot(select(mysample.exp2,國文,數學,歷史,地理),xlim=c(0,100),ylim=c(0,100))
+plot(select(mysample.exp2,"國文","數學","歷史","地理"),xlim=c(0,100),ylim=c(0,100))
 plot(mysample.exp2[,2:5],xlim=c(0,100),ylim=c(0,100))
 
 ###############################################################################
@@ -117,6 +117,14 @@ plot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處�
 
 ###############################################################################
 
+plot(mysample.exp2[,2:3],xlim=c(0,100),ylim=c(0,100),xlab="",ylab="",main="多樣成績分佈")
+points(select(mysample.exp2,"數學","歷史"),pch=5,col="red")
+points(select(mysample.exp2,"數學","地理"),pch=8,col="blue")
+
+grid(lwd=2,col="gray50")
+
+p<-hist(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",breaks=20,col="gray")#直方圖
+lines(y=p$counts,x=p$mids,col="red")
 
 
 

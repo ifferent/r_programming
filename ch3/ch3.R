@@ -88,18 +88,22 @@ boxplot(mysample.exp3$銷售額)
 
 #########################################################################################################
 
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額")#散佈圖
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額")#散佈圖
 par(mfrow=c(3,3))
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=3)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=6)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=9)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=11)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=12)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=18)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=19)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch='*')
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch='%')
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=3)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=6)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=9)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=11)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=12)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=18)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=21)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch='*')
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch='%')
 
+plot(select(mysample.exp2,國文,數學,歷史,地理))
+plot(mysample.exp2[,2:5])
+plot(select(mysample.exp2,國文,數學,歷史,地理),xlim=c(0,100),ylim=c(0,100))
+plot(mysample.exp2[,2:5],xlim=c(0,100),ylim=c(0,100))
 
 #########################################################################################################
 

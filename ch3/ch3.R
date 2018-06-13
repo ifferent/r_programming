@@ -73,18 +73,6 @@ barplot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計�
 barplot(mysample.exp1_1$"從不",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(從不)", names.arg=age_range)
 
 ###############################################################################
-par(mfrow=c(1,1))
-mysample.exp1.percent<-prop.table(mysample.exp1_nocolname$"極少")*100
-age_percent<-paste(age_range," ",round(mysample.exp1.percent,2),"%",sep="")
-pie(mysample.exp1.percent,xlab="年齡區間",labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",init.angle=0)
-
-fan.plot(round(mysample.exp1.percent),labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",ticks=500)
-
-###############################################################################
-
-boxplot(mysample.exp3$銷售額)#盒鬚圖
-
-###############################################################################
 
 plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額")#散佈圖
 par(mfrow=c(3,3))
@@ -126,7 +114,24 @@ grid(lwd=2,col="gray50")
 p<-hist(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",breaks=20,col="gray")#直方圖
 lines(y=p$counts,x=p$mids,col="red")
 
+plot(5,5,type="n",xlim=c(0,10),ylim=c(0,10))
+x1<-0:20
+abline(a=x1,b=1) #y=x
+abline(a=x1+10,b=-1,col="red")#y=-x+10
+abline(v=1:5,col="green")
+abline(h=1:5,col="blue")
 
+###############################################################################
+
+mysample.exp1.percent<-prop.table(mysample.exp1_nocolname$"極少")*100
+age_percent<-paste(age_range," ",round(mysample.exp1.percent,2),"%",sep="")
+pie(mysample.exp1.percent,xlab="年齡區間",labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",init.angle=0)
+
+fan.plot(round(mysample.exp1.percent),labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",ticks=500)
+
+p<-boxplot(mysample.exp3$銷售額)#盒鬚圖
+
+###############################################################################
 
 
 

@@ -76,7 +76,7 @@ ggplot(ch4sample.exp1_gatable,aes(x=頻率,y=人數,fill=年齡區間)) +
 ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
     geom_bar(position="dodge",stat="identity") + 
         guides(fill=guide_legend(reverse = TRUE)) #改變legend(頻率)順序
-#ch4sample.exp1_gatable$頻率<-factor(ch4sample.exp1_gatable$頻率,levels=freq_tag)#改變頻率順序另一個方法
+#ch4sample.exp1_gatable$頻率<-factor(ch4sample.exp1_gatable$頻率,levels=freq_tag)#改變lengend(頻率)順序另一個方法
 
 ###############################################################################
 
@@ -114,11 +114,18 @@ ggplot(ch4sample.exp2,aes(x=年月,y=總指數))+geom_line()
 
 ch4sample.exp2_gatable<-select(ch4sample.exp2, item.gather)
 ch4sample.exp2_gatable<-gather(ch4sample.exp2_gatable,item.seq,key="品項",value="年增率") #將表格轉成聚集形式
-ch4sample.exp2_gatable$品項<-factor(ch4sample.exp2_gatable$品項,levels=item.seq)#改變頻率順序
 
-ggplot(ch4sample.exp2_gatable,aes(x=年月,y=年增率,colour=品項))+geom_line()+scale_colour_brewer(palette="Set2")
+ggplot(ch4sample.exp2_gatable,aes(x=年月,y=年增率,colour=品項)) +
+    geom_line() +
+        guides(colour=guide_legend(reverse = TRUE)) #改變legend(品項)順序
+#ch4sample.exp2_gatable$品項<-factor(ch4sample.exp2_gatable$品項,levels=item.seq)#改變legend(品項)順序另一個方法
 
-ggplot(ch4sample.exp2_gatable,aes(x=年月,y=年增率,group=品項))+geom_line(colour="blue",linetype="dashed")
+ggplot(ch4sample.exp2_gatable,aes(x=年月,y=年增率,colour=品項,linetype=品項)) +
+    geom_line() +
+        guides(colour=guide_legend(reverse = TRUE), linetype=guide_legend(reverse = TRUE))
+
+ggplot(ch4sample.exp2_gatable,aes(x=年月,y=年增率,group=品項)) +
+    geom_line(colour="blue",linetype="dashed")
 
 ###################################################################################
 

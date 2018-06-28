@@ -1,13 +1,44 @@
+###############################################################################
+###############################################################################
+####                                                                       ####
+#### 完成日期: 2018-06-14                                                  ####
+#### 作者：Roddy Hung                                                      ####
+#### 版本：V3.1                                                            ####
+####                                                                       ####
+#### 第3章範例程式:                                                        ####
+####    1.繪畫長條圖                                                       ####
+####    2.繪畫直方圖                                                       ####
+####    3.繪畫散佈圖                                                       ####
+####    4.繪圖參數的設定                                                   ####
+####    5.低階繪圖函數的使用                                               ####
+####    6.繪畫圓形圖                                                       ####
+####    7.繪畫扇形圖                                                       ####
+####    8.繪畫盒鬚圖                                                       ####
+####                                                                       ####
+###############################################################################
+###############################################################################
+
+source("common/check_package.R")#檢查是否有未安裝的套件
+
+###############################################################################
+####                                                                       ####
+#### 載入套件相關使用函數參考:                                             ####
+#### readr: read_csv                                                       ####
+#### dplyr: seleclt                                                        ####
+#### plotrix: fan.plot                                                     ####
+####                                                                       ####
+###############################################################################
+
 library(readr)
 library(dplyr)
 library(plotrix)
 
-############################################檔案載入與設定################################################
+################################檔案載入與設定#################################
 
-mysample.exp1_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(年齡).csv"
-mysample.exp1_1_path="presentation_sample_ppt/sample_data/family/最近一年內曾因家庭緣故影響工作之情形－按中斷工作或上班時臨時趕回家分(年齡).csv"
-mysample.exp2_path="presentation_sample_ppt/sample_data/myself/ch3_exp1.csv"
-mysample.exp3_path="presentation_sample_ppt/sample_data/myself/ch3_exp2.csv"
+mysample.exp1_path="ch3/sample_data/最近一年內曾因家庭緣故影響工作之情形－按無法加班或無法延長工時分(年齡).csv"
+mysample.exp1_1_path="ch3/sample_data/最近一年內曾因家庭緣故影響工作之情形－按中斷工作或上班時臨時趕回家分(年齡).csv"
+mysample.exp2_path="ch3/sample_data/成績單.csv"
+mysample.exp3_path="ch3/sample_data/產品銷售額.csv"
 
 mysample.exp1<-read_csv(mysample.exp1_path,col_names = FALSE)
 mysample.exp1_nocolname<-read_csv(mysample.exp1_1_path,col_names=TRUE)
@@ -15,23 +46,59 @@ mysample.exp1_1<-read_csv(mysample.exp1_1_path,col_names=TRUE)
 mysample.exp2<-read_csv(mysample.exp2_path,col_names=TRUE)
 mysample.exp3<-read_csv(mysample.exp3_path,col_names=TRUE)
 
-##########################################################################################################
+###############################################################################
 
 age_range<-c("20－24歲","25－29歲","30－34歲","35－39歲","40－44歲","45－49歲","50－54歲","55－59歲","60－64歲","65歲及以上")
 freq_tag<-c("經常","有時","極少","從不")
 barplot(mysample.exp1_nocolname$"經常")
 barplot(mysample.exp1_nocolname$"經常",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形(經常)", names.arg=age_range)
+
 barplot(mysample.exp1_nocolname$"有時",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形(有時)", names.arg=age_range)
+
 barplot(mysample.exp1_nocolname$"極少",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形(極少)", names.arg=age_range)
+
 barplot(mysample.exp1_nocolname$"從不",xlab="年齡區間",ylab="計數",horiz=TRUE,main="主計處─因家庭緣故影響無法加班或延長工時之情形(從不)", names.arg=age_range)#放橫的
 
 barplot(mysample.exp1_nocolname$"經常",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形(經常)", names.arg=age_range, legend=mysample.exp1_nocolname$"項目", col=c("gray","green","blue","red","cyan","yellow","pink","magenta","black","aliceblue"))#legend & color 的使用
 
-bind_table<-cbind(mysample.exp1_nocolname$"經常",mysample.exp1_nocolname$"有時",mysample.exp1_nocolname$"極少",mysample.exp1_nocolname$"從不")
+#############################選出我們需要的列#################################
+bind_table<-cbind(mysample.exp1_nocolname$"經常",mysample.exp1_nocolname$"有時",mysample.exp1_nocolname$"極少",mysample.exp1_nocolname$"從不")#使用cbind
+#也可以使用bind_table<-mysample.exp1_nocolname[,2:5]
+
+bind_table<-select(mysample.exp1_nocolname, "經常", "有時", "極少", "從不")#使用select
 
 barplot(t(bind_table),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=TRUE) #複式長條圖
 
-##########################################################################################################
+barplot(t(bind_table2),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=TRUE) #複式長條圖
+
+barplot(t(bind_table),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=FALSE) #堆疊長條圖
+
+###############################################################################
+hist(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",breaks=20,col=c("gray","green","red","blue"))#直方圖
+
+hist(mysample.exp2$數學,xlab="數學",ylab="計數",main="數學成績",breaks=5)#直方圖
+
+###############################################################################
+
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額")#散佈圖
+par(mfrow=c(3,3))
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=3)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=6)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=9)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=11)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=12)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=18)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch=21)
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch='*')
+plot(mysample.exp3$銷售額,xlab="日",ylab="銷售額",main="公司銷售額",pch='%')
+
+plot(select(mysample.exp2,"國文","數學","歷史","地理"))
+plot(mysample.exp2[,2:5])
+plot(select(mysample.exp2,"國文","數學","歷史","地理"),xlim=c(0,100),ylim=c(0,100))
+plot(mysample.exp2[,2:5],xlim=c(0,100),ylim=c(0,100))
+
+###############################################################################
+
 par(mfrow=c(2,2))
 barplot(mysample.exp1_1$"經常",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(經常)", names.arg=age_range)
 barplot(mysample.exp1_1$"有時",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(有時)", names.arg=age_range)
@@ -56,37 +123,7 @@ barplot(mysample.exp1_1$"有時",xlab="年齡區間",ylab="計數",main="主計�
 barplot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)", names.arg=age_range)
 barplot(mysample.exp1_1$"從不",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(從不)", names.arg=age_range)
 
-
-hist(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",breaks=50)
-
-##########################################################################################################
-par(mfrow=c(1,1))
-mysample.exp1.percent<-prop.table(mysample.exp1_nocolname$"極少")*100
-age_percent<-paste(age_range," ",round(mysample.exp1.percent,2),"%",sep="")
-pie(mysample.exp1.percent,xlab="年齡區間",labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",init.angle=0)
-
-fan.plot(round(mysample.exp1.percent),labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",ticks=500)
-
-##########################################################################################################
-
-boxplot(mysample.exp3$銷售額)
-
-#########################################################################################################
-
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額")#散佈圖
-par(mfrow=c(3,3))
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=3)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=6)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=9)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=11)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=12)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=18)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch=19)
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch='*')
-plot(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",pch='%')
-
-
-#########################################################################################################
+###############################################################################
 
 plot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",type='l',col="red")
 plot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",type='h',col="blue")
@@ -98,6 +135,36 @@ plot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處�
 plot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",type='l',col="gray50",lwd=5,lty=3,xlim=c(3,5))
 plot(mysample.exp1_1$"極少",xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",type='l',col="gray80",lwd=7,lty=4,xlim=c(3,5),ylim=c(550,650))
 
+###############################################################################
+
+plot(mysample.exp2[,2:3],xlim=c(0,100),ylim=c(0,100),xlab="",ylab="",main="多樣成績分佈")
+points(select(mysample.exp2,"數學","歷史"),pch=5,col="red")
+points(select(mysample.exp2,"數學","地理"),pch=8,col="blue")
+
+grid(lwd=2,col="gray50")
+
+p<-hist(mysample.exp3$銷售額,xlab="銷售額",ylab="計數",main="公司銷售額",breaks=20,col="gray")#直方圖
+lines(y=p$counts,x=p$mids,col="red")
+
+plot(5,5,type="n",xlim=c(0,10),ylim=c(0,10))
+x<-0:20
+abline(a=x,b=1) #y=x
+abline(a=x+10,b=-1,col="red")#y=-x+10
+abline(v=1:5,col="green")
+abline(h=1:5,col="blue")
+
+###############################################################################
+
+mysample.exp1.percent<-prop.table(mysample.exp1_nocolname$"極少")*100
+age_percent<-paste(age_range," ",round(mysample.exp1.percent,2),"%",sep="")
+pie(mysample.exp1.percent,xlab="年齡區間",labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",init.angle=0)
+
+fan.plot(round(mysample.exp1.percent),labels=age_percent,main="主計處─因家庭緣故中斷工作或上班時臨時趕回家(極少)",ticks=200,max.span=9*pi/10)
+
+boxplot(mysample.exp3$銷售額)#盒鬚圖
+boxplot(mysample.exp2[,2:5])#盒鬚圖
+
+###############################################################################
 
 
 

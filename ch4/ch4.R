@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-06-27                                                  ####
+#### 完成日期: 2018-06-28                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V3.3                                                            ####
+#### 版本：V3.4                                                            ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.基礎繪圖(圖形)文法的概念                                         ####
@@ -30,9 +30,9 @@ source("common/check_package.R")#檢查是否有未安裝的套件
 ####                                                                       ####
 #### 載入套件相關使用函數參考:                                             ####
 #### readr: read_csv                                                       ####
-#### dplyr: select,rename,mutate                                           ####
+#### dplyr: filter,select,rename,mutate                                    ####
 #### ggplot2: 略                                                           ####
-#### tidyr: gather                                                         ####
+#### tidyr: gather,spread                                                  ####
 #### lubridate: make_date                                                  ####
 ####                                                                       ####
 ###############################################################################
@@ -170,11 +170,11 @@ ch4sample.exp4_ponhu<-filter(ch4sample.exp4, 光電站名稱== "澎湖光電")
 ggplot(ch4sample.exp4_ponhu,aes(x=年月, y=平均單位裝置容量每日發電量)) +
     geom_point()#使用filter來將表格抽離
 ggplot(ch4sample.exp4_sprtable.perday,aes(x=年月, y=澎湖光電)) +
-  geom_point()#使用分散表示法，這個的優點是可以在美學映射中較好知道程式要講甚麼
+    geom_point()#使用分散表示法，這個的優點是可以在美學映射中較好知道程式要講甚麼
 ggplot(ch4sample.exp4_ponhu,aes(x=年月, y=`發電量(度)`)) +
-  geom_point()#使用filter來將表格抽離
+    geom_point()#使用filter來將表格抽離
 ggplot(ch4sample.exp4_sprtable.total,aes(x=年月, y=澎湖光電)) +
-  geom_point()#使用分散表示法
+    geom_point()#使用分散表示法
 
 ###################################################################################
 
@@ -183,12 +183,35 @@ ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, c
 
 ch4sample.exp4$年月<-factor(ch4sample.exp4$年月)
 ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱,group=1)) +
-  geom_point()
+    geom_point()
 
 ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱, shape=光電站名稱)) +
-  geom_point()
+    geom_point()
 
 ###################################################################################
+
+ggplot(ch4sample.exp4_sprtable.perday, aes(x=年月, y=澎湖光電)) +
+    geom_line() +
+        geom_point(size=4,shape=22,fill="pink")
+
+ggplot(ch4sample.exp4_sprtable.perday) +
+    geom_line(aes(x=年月, y=澎湖光電))+
+        geom_line(aes(x=年月, y=七美光電)) +
+            geom_point(aes(x=年月, y=澎湖光電)) +
+                geom_point(aes(x=年月, y=七美光電),size=4,shape=22,fill="pink")
+
+ggplot(ch4sample.exp4_sprtable.perday, aes(x=年月, y=澎湖光電)) +
+    geom_line()+
+        geom_line(aes(x=年月, y=七美光電)) +
+            geom_point() +
+                geom_point(aes(x=年月, y=七美光電),size=4,shape=22,fill="pink")
+
+
+
+
+
+
+
 
 
 

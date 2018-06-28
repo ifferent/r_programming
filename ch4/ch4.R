@@ -156,11 +156,27 @@ ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,group=品項)) +
 
 ###################################################################################
 
+
+
+############################# Scatter Graphs ######################################
+
 ch4sample.exp4<-mutate(ch4sample.exp4, "年月" = make_date(年度,月份))
+#將表格轉成分散形式來表示"平均單位裝置容量每日發電量"與"各光電站的關係"
+ch4sample.exp4_sprtable.perday<-spread(select(ch4sample.exp4, "年月", "光電站名稱", "平均單位裝置容量每日發電量"),key="光電站名稱", value="平均單位裝置容量每日發電量")
+#將表格轉成分散形式來表示"發電量(度)"與"各光電站的關係"
+ch4sample.exp4_sprtable.total<-spread(select(ch4sample.exp4, "年月", "光電站名稱", "發電量(度)"),key="光電站名稱", value="發電量(度)")
 
 ch4sample.exp4_ponhu<-filter(ch4sample.exp4, 光電站名稱== "澎湖光電")
 ggplot(ch4sample.exp4_ponhu,aes(x=年月, y=平均單位裝置容量每日發電量)) +
-    geom_point()
+    geom_point()#使用filter來將表格抽離
+ggplot(ch4sample.exp4_sprtable.perday,aes(x=年月, y=澎湖光電)) +
+  geom_point()#使用分散表示法，這個的優點是可以在美學映射中較好知道程式要講甚麼
+ggplot(ch4sample.exp4_ponhu,aes(x=年月, y=`發電量(度)`)) +
+  geom_point()#使用filter來將表格抽離
+ggplot(ch4sample.exp4_sprtable.total,aes(x=年月, y=澎湖光電)) +
+  geom_point()#使用分散表示法
+
+###################################################################################
 
 ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
     geom_point()
@@ -172,7 +188,7 @@ ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, c
 ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱, shape=光電站名稱)) +
   geom_point()
 
-
+###################################################################################
 
 
 

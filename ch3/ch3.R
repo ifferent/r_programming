@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-06-14                                                  ####
+#### 完成日期: 2018-06-29                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V3.1                                                            ####
+#### 版本：V3.2                                                            ####
 ####                                                                       ####
 #### 第3章範例程式:                                                        ####
 ####    1.繪畫長條圖                                                       ####
@@ -45,7 +45,7 @@ ch3sample.exp1<-read_csv(ch3sample.exp1_path,col_names = FALSE)
 ch3sample.exp1_nocolname<-read_csv(ch3sample.exp1_1_path,col_names=TRUE)
 ch3sample.exp1_1<-read_csv(ch3sample.exp1_1_path,col_names=TRUE)
 ch3sample.exp2<-read_csv(ch3sample.exp2_path,col_names=TRUE)
-#ch3sample.exp3<-read_csv(ch3sample.exp3_path,col_names=TRUE)
+ch3sample.exp3<-read_csv(ch3sample.exp3_path,col_names=TRUE)
 
 ###############################################################################
 
@@ -64,13 +64,12 @@ barplot(ch3sample.exp1_nocolname$"經常",xlab="年齡區間",ylab="計數",main
 
 #############################選出我們需要的列#################################
 bind_table<-cbind(ch3sample.exp1_nocolname$"經常",ch3sample.exp1_nocolname$"有時",ch3sample.exp1_nocolname$"極少",ch3sample.exp1_nocolname$"從不")#使用cbind
-#也可以使用bind_table<-ch3sample.exp1_nocolname[,2:5]
+#也可以使用bind_table2<-ch3sample.exp1_nocolname[,2:5]
 
 bind_table<-select(ch3sample.exp1_nocolname, "經常", "有時", "極少", "從不")#使用select
 
 barplot(t(bind_table),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=TRUE) #複式長條圖
-
-barplot(t(bind_table2),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=TRUE) #複式長條圖
+#barplot(t(bind_table2),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=TRUE) #複式長條圖
 
 barplot(t(bind_table),xlab="年齡區間",ylab="計數",main="主計處─因家庭緣故影響無法加班或延長工時之情形", names.arg=age_range, legend=freq_tag, col=c("gray","green","red","blue"),beside=FALSE) #堆疊長條圖
 

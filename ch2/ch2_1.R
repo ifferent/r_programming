@@ -48,7 +48,6 @@ union(set.x,set.y) #聯集
 intersect(set.x,set.y) #交集
 setdiff(set.x,set.y) #差集
 union(setdiff(set.x,set.y), setdiff(set.y,set.x)) #補差集
-xor(set.x,set.y)
 
 #######################################################################
 (set.x>5)&(set.x<=8)

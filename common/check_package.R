@@ -22,3 +22,11 @@ if(!require(lubridate))
 {
   install.packages("lubridate")
 }
+if(!require(gtools))
+{
+  install.packages("gtools")
+}
+if(!require(purrr))
+{
+  install.packages("purrr")
+}

@@ -56,14 +56,14 @@ ch4sample.exp2<-read_csv(ch4sample.exp2_path,col_names=TRUE)
 ch4sample.exp3<-read_csv(ch4sample.exp3_path,col_names=TRUE)
 ch4sample.exp4<-read_csv(ch4sample.exp4_path,col_names=TRUE)
 
-##########################################################################################################
+############################ aesthetic mapping ################################
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=經常)) + geom_bar(stat="identity")
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + geom_bar(stat="identity")
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + geom_bar(stat="identity")
 
-###############################################################################
+############################## bar graphic ####################################
 
 freq_tag<-c("經常","有時","極少","從不")
 
@@ -81,28 +81,25 @@ ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
         guides(fill=guide_legend(reverse = TRUE)) #改變legend(頻率)順序
 #ch4sample.exp1_gatable$頻率<-factor(ch4sample.exp1_gatable$頻率,levels=freq_tag)#改變lengend(頻率)順序另一個方法
 
-###############################################################################
+############################# fill & colour ###################################
+exp1.fill<-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率))
+exp1.colour<-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,colour=頻率))
 
-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
-    geom_bar(stat="identity",position="stack")#position="stack"
+exp1.fill + geom_bar(stat="identity",position="stack")#position="stack"
 
-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
-    geom_bar(stat="identity")#default position="stack"
+exp1.fill + geom_bar(stat="identity")#default position="stack"
 
-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
-    geom_bar(stat="identity",position="fill")#position="fill"
+exp1.fill + geom_bar(stat="identity",position="fill")#position="fill"
 
-ggplot(ch4sample.exp1,aes(x=項目別,y=有時,colour=項目別)) +
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,colour=項目別)) + 
     geom_bar(stat="identity",fill="white")
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,colour=有時)) +
     geom_bar(stat="identity",fill="white")
 
-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,colour=頻率)) +
-    geom_bar(stat="identity", position="dodge", fill="white")
+exp1.colour + geom_bar(stat="identity", position="dodge", fill="white")
 
-ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,colour=頻率)) +
-    geom_bar(stat="identity", position="dodge", fill="white", size=2)
+exp1.colour + geom_bar(stat="identity", position="dodge", fill="white", size=2)
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,colour=有時)) +
     geom_bar(stat="identity",fill="white",width=2)
@@ -110,26 +107,23 @@ ggplot(ch4sample.exp1,aes(x=項目別,y=有時,colour=有時)) +
 subject_tag<-c("國文","數學","歷史","地理")
 ch4sample.exp2_gatable<-gather(ch4sample.exp2,subject_tag,key="科目",value="分數") #將表格轉成聚集形式
 
-ggplot(ch4sample.exp2,aes(x=國文)) +
-  geom_histogram(fill="white", colour="black")
-ggplot(ch4sample.exp2,aes(x=國文)) +
-  geom_histogram(fill="white", colour="black", binwidth=10)
+scope.his<-ggplot(ch4sample.exp2,aes(x=國文))
+stat_trans_1<-ggplot(ch4sample.exp2,aes(x=國文))
+stat_trans_2<-ggplot(ch4sample.exp2_gatable,aes(x=分數,fill=科目))
+
+scope.his + geom_histogram(fill="white", colour="black")
+scope.his + geom_histogram(fill="white", colour="black", binwidth=10)
 
 ggplot(ch4sample.exp2_gatable,aes(x=分數,fill=科目)) +
   geom_histogram(position="identity", binwidth=15, alpha=0.3)
 
+stat_trans_1 + geom_bar(stat="bin", bins=5, fill="white", colour="black")
 
-ggplot(ch4sample.exp2,aes(x=國文)) +
-  geom_bar(stat="bin", bins=5, fill="white", colour="black")
+stat_trans_1 + stat_bin(geom="bar", bins=5, fill="white", colour="black")
 
-ggplot(ch4sample.exp2,aes(x=國文)) + 
-    stat_bin(geom="bar", bins=5, fill="white", colour="black")
+stat_trans_2 + geom_bar(stat="bin", bins=8, position="identity", alpha=0.3)
 
-ggplot(ch4sample.exp2_gatable,aes(x=分數,fill=科目)) +
-    geom_bar(stat="bin", bins=8, position="identity", alpha=0.3)
-
-ggplot(ch4sample.exp2_gatable,aes(x=分數,fill=科目)) + 
-    stat_bin(geom="bar", bins=8, position="identity", alpha=0.3)
+stat_trans_2 + stat_bin(geom="bar", bins=8, position="identity", alpha=0.3)
 
 ######################### Line Graphs #########################################
 item.gather<-c("年月","總指數","米類及其製品","肉類","蔬菜")
@@ -153,9 +147,6 @@ ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,colour=品項,linetype=�
 
 ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,group=品項)) +
     geom_line(colour="blue",linetype="dashed")
-
-###################################################################################
-
 
 
 ############################# Scatter Graphs ######################################

@@ -197,8 +197,57 @@ ggplot(ch4sample.exp4_sprtable.perday, aes(x=年月, y=澎湖光電)) +
             geom_point() +
                 geom_point(aes(x=年月, y=七美光電),size=4,shape=22,fill="pink")
 
+################################## Facets #####################################
 
+ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
+  geom_point() +
+  facet_grid(科目~.)
 
+ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
+  geom_point() +
+  facet_grid(.~科目)
+
+ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
+  geom_point() +
+  facet_grid(.~性別)
+
+ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
+  geom_point() +
+  facet_grid(班級~性別)
+
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+  geom_point() +
+  geom_line() +
+  facet_grid(.~月份)
+
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~月份)
+
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~月份,nrow=4)
+
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~月份,ncol=5)
+
+ch4sample.exp2_matrix<-m2gg.scope(ch4sample.exp2)
+
+ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
+  geom_point() +
+  facet_grid(科目1~科目2)
+
+ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=性別,colour=班級)) +
+  geom_point() +
+  facet_grid(科目1~科目2)
+
+ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
+  geom_point() +
+  facet_wrap(科目1~科目2)
 
 
 

@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-07-11                                                  ####
+#### 完成日期: 2018-07-12                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V4.5                                                            ####
+#### 版本：V4.6                                                            ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.基礎繪圖(圖形)文法的概念                                         ####
@@ -284,6 +284,76 @@ ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
 ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
     geom_point() +
         facet_wrap(性別~科目2)
+
+################################## Scales #####################################
+
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
+    geom_bar(stat="identity") #離散變數
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + 
+    geom_bar(stat="identity") #連續變數 
+
+ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+    geom_point() +
+        scale_colour_brewer(palette = "Set3")
+
+#gradient是連續變數，所以使用在離散變數上會出現錯誤
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
+    geom_bar(stat="identity") +
+        scale_fill_gradient(low="#00ff00", high="#ff99cc") 
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + 
+    geom_bar(stat="identity") +
+        scale_fill_gradient(low="#00ff00", high="#ff99cc")
+
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別,colour=項目別)) + 
+    geom_bar(stat="identity") +
+        scale_fill_hue(h=c(0,360),c=50,l=80)
+
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
+    geom_bar(stat="identity") +
+        scale_fill_grey(start=0.2,end=0.8)
+
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+    geom_point() +
+        scale_colour_hue(breaks=c("七美光電","澎湖光電","金門光電")) + 
+            scale_y_continuous(limits=c(2,2.5),breaks=seq(2,2.5,0.01))+
+                scale_x_discrete(limits=c("七美光電","澎湖光電","金門光電"))
+
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+    geom_point() +
+        scale_colour_hue(h=c(0,360),c=50,l=80,breaks=c("七美光電","澎湖光電","金門光電")) + 
+            scale_x_discrete(limits=c("七美光電","澎湖光電","金門光電"), breaks=c("七美光電","澎湖光電"))
+#反轉y軸
+ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,colour=品項)) +
+    geom_line() +
+        scale_y_reverse()
+
+#y軸以log10為刻度
+ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
+    geom_bar(position="dodge",stat="identity") +
+        scale_y_log10() + 
+            guides(colour=guide_legend(reverse = TRUE)) 
+
+ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,colour=品項,linetype=品項)) +
+    geom_line() +
+        scale_linetype_manual(values=c(5:8))
+            guides(colour=guide_legend(reverse = TRUE)) 
+
+ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
+    geom_bar(position="dodge",stat="identity") + 
+        scale_fill_manual(values=c("magenta2","#7e9f68","chocolate4","cyan2"))
+
+ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱, shape=光電站名稱)) +
+    geom_point() +
+        scale_shape_manual(values=c(0:15))
+
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + 
+  geom_bar(stat="identity") +
+  scale_fill_gradient(name="統計人數",labels=seq(0,350,30),breaks=seq(0,350,30),low="#00ff00", high="#ff99cc")
+
+################################## Scales #####################################
+
+
+
 
 
 

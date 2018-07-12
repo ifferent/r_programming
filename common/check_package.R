@@ -10,6 +10,10 @@ if(!require(tibble))
 {
   install.packages("tibble")
 }
+if(!require(tidyr))
+{
+  install.packages("tidyr")
+}
 if(!require(plotrix))
 {
   install.packages("plotrix")

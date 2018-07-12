@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-07-05                                                  ####
+#### 完成日期: 2018-07-11                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V4.0                                                            ####
+#### 版本：V4.5                                                            ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.基礎繪圖(圖形)文法的概念                                         ####
@@ -20,12 +20,15 @@
 ####        i.統計轉換的概念                                               ####
 ####    5.線圖                                                             ####
 ####    6.散佈圖                                                           ####
+####    7.Facets                                                           ####
+####    8.Scale                                                            ####
 ####                                                                       ####
 ###############################################################################
 ###############################################################################
 
 source("common/check_package.R")#檢查是否有未安裝的套件
 source("common/function.R",encoding="utf-8") #將公用自訂函數載起來
+
 ###############################################################################
 ####                                                                       ####
 #### 載入套件相關使用函數參考:                                             ####
@@ -36,6 +39,7 @@ source("common/function.R",encoding="utf-8") #將公用自訂函數載起來
 #### lubridate: make_date                                                  ####
 ####                                                                       ####
 ###############################################################################
+
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -199,74 +203,88 @@ ggplot(ch4sample.exp4_sprtable.perday, aes(x=年月, y=澎湖光電)) +
 
 ################################## Facets #####################################
 
+#橫軸顯示
 ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
-  geom_point() +
-  facet_grid(科目~.)
+    geom_point() +
+        facet_grid(科目~.)
 
+#縱軸顯示
 ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
-  geom_point() +
-  facet_grid(.~科目)
+    geom_point() +
+        facet_grid(.~科目)
 
+#非aesthetic映射的變數
 ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
-  geom_point() +
-  facet_grid(.~性別)
+    geom_point() +
+        facet_grid(.~性別)
 
+#雙變數
 ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
-  geom_point() +
-  facet_grid(班級~性別)
+    geom_point() +
+        facet_grid(班級~性別)
 
+#雙變數以上
 ggplot(ch4sample.exp2_gatable,aes(x=學號,y=分數,colour=科目)) +
-  geom_point() +
-  facet_grid(班級+性別~科目)
+    geom_point() +
+        facet_grid(班級+性別~科目)
+
+#grid & wrap的比較
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+    geom_point() +
+        geom_line() +
+            facet_grid(.~月份) + 
+                scale_x_discrete(labels=NULL, breaks=NULL) +
+                    scale_y_continuous(breaks=seq(0.5,5.2,0.5))
 
 ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-  geom_point() +
-  geom_line() +
-  facet_grid(.~月份)
+    geom_point() +
+        geom_line() +
+            facet_wrap(~月份) + 
+                scale_x_discrete(labels=NULL, breaks=NULL) +
+                    scale_y_continuous(breaks=seq(0.5,5.5,0.5))
+
+#使用wrap更改row和column
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+    geom_point() +
+        geom_line() +
+            facet_wrap(~月份,nrow=4) + 
+                scale_x_discrete(labels=NULL, breaks=NULL) +
+                    scale_y_continuous(breaks=seq(0.5,5.5,0.5))
 
 ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-  geom_point() +
-  geom_line() +
-  facet_wrap(~月份)
+    geom_point() +
+        geom_line() +
+            facet_wrap(~月份,ncol=5,nrow=3) +
+                scale_x_discrete(labels=NULL, breaks=NULL) +
+                    scale_y_continuous(breaks=seq(0.5,5.5,0.5))
 
-ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-  geom_point() +
-  geom_line() +
-  facet_wrap(~月份) + 
-  scale_x_discrete(labels=NULL)
 
-ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-  geom_point() +
-  geom_line() +
-  facet_wrap(~月份,nrow=4) + 
-  scale_x_discrete(labels=NULL)
+ch4sample.exp2_matrix<-m2gg.scope(ch4sample.exp2) #轉換表格符合散佈矩矩陣圖
 
-ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-  geom_point() +
-  geom_line() +
-  facet_wrap(~月份,ncol=5)
-
-ch4sample.exp2_matrix<-m2gg.scope(ch4sample.exp2)
+#改變排列順序為"國文","數學","歷史","地理"
+ch4sample.exp2_matrix$科目1<-factor(ch4sample.exp2_matrix$科目1,levels=c("國文","數學","歷史","地理"))
+ch4sample.exp2_matrix$科目2<-factor(ch4sample.exp2_matrix$科目2,levels=c("國文","數學","歷史","地理"))
 
 ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2)) +
-  geom_point() +
-  facet_grid(科目1~科目2)
+    geom_point() +
+        facet_grid(科目1~科目2)
 
 ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=性別,colour=班級)) +
-  geom_point() +
-  facet_grid(科目1~科目2)
+    geom_point() +
+        facet_grid(科目1~科目2)
 
 ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=性別,colour=班級)) +
-  geom_point() +
-  facet_grid(科目1~科目2+性別)
+    geom_point() +
+        facet_grid(科目1~科目2+性別)
 
 ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
-  geom_point() +
-  facet_wrap(科目1~科目2)
+    geom_point() +
+        facet_wrap(科目1~科目2)
 
 ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
-  geom_point() +
-  facet_wrap(性別~科目2)
+    geom_point() +
+        facet_wrap(性別~科目2)
+
 
 
 

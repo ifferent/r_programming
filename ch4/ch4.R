@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-07-12                                                  ####
+#### 完成日期: 2018-07-13                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V4.6                                                            ####
+#### 版本：V4.7                                                            ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.基礎繪圖(圖形)文法的概念                                         ####
@@ -22,6 +22,7 @@
 ####    6.散佈圖                                                           ####
 ####    7.Facets                                                           ####
 ####    8.Scale                                                            ####
+####    9.文字輔助標示與版面配置                                           ####
 ####                                                                       ####
 ###############################################################################
 ###############################################################################
@@ -366,18 +367,62 @@ ggplot(ch4sample.exp3_gatable.traffic,aes(x=年月,y=年增率,colour=品項)) +
 ############################# Annotation & Layout #############################
 
 ggplot(ch4sample.exp3,aes(x=年月,y=總指數)) +
-    geom_line(colour="#ec8092") +
-        labs(
-          title = "消費者物價基本分類暨項目群指數",
-          subtitle = "總指數",
-          y="年增率",
-          caption = "主計處"
-        )
+  geom_line(colour="#ec8092") +
+  labs(
+    title = "消費者物價基本分類暨項目群指數",
+    subtitle = "總指數",
+    y="年增率",
+    caption = "主計處"
+  )
 
-ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+data_we_want<-filter( group_by(ch4sample.exp4,光電站名稱),
+                      (光電站名稱=="七美光電")|(光電站名稱=="澎湖光電")|(光電站名稱=="金門光電")
+)
+ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量)) +
+  geom_point(aes(colour=光電站名稱),data=data_we_want) +
+  geom_text(aes(label=光電站名稱,colour=光電站名稱), data=data_we_want, show.legend=F)
+
+ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量)) +
+  geom_point(aes(colour=光電站名稱)) +
+  geom_text(aes(label=光電站名稱,colour=光電站名稱), 
+            data=data_we_want, show.legend=F, 
+            nudge_y=0.1) +
+  scale_colour_hue(limits=c("七美光電","澎湖光電","金門光電"),
+                   breaks=c("七美光電","澎湖光電","金門光電"))
+
+ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量)) +
+  geom_point(aes(colour=光電站名稱),data=data_we_want) +
+  geom_label(aes(label=光電站名稱,colour=光電站名稱), data=data_we_want, show.legend=F,
+             nudge_y=0.1,alpha=0.5)
+
+ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,colour=品項)) +
+  geom_line() +
+  guides(colour=guide_legend(reverse = TRUE)) +
+  annotate("rect", xmin=as.Date("2010-01-01","%Y-%m-%d"),
+           xmax=as.Date("2016-12-01","%Y-%m-%d"),
+           ymin =-50, ymax=85,fill="#cc00ff",alpha=0.3) +
+  annotate("segment", x=as.Date("2008-05-01","%Y-%m-%d"),
+           xend=as.Date("2016-02-01","%Y-%m-%d"),
+           y =90, yend=80,color="#006600",alpha=0.8,size=1.2,arrow=arrow())
+
+ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
+  geom_bar(position="dodge",stat="identity") +
+  guides(colour=guide_legend(reverse = TRUE)) +
+  theme(legend.position = "top",
+        legend.background = element_rect(colour="green",size=1.2),
+        legend.text = element_text(colour="blue"),
+        panel.grid.major = element_line(colour="red"),
+        panel.grid.minor = element_line(colour="red", linetype="dashed", size=0.3))
+
+ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2)) +
   geom_point() +
-  geom_text(aes(label=年度)) +
-  scale_colour_hue(limits=c("七美光電","澎湖光電","金門光電"),breaks=c("七美光電","澎湖光電","金門光電"))
+  facet_grid(科目1~科目2) +
+  labs(title="三班成績散佈矩陣圖") +
+  theme(strip.background = element_rect(fill="pink2"),
+        strip.text = element_text(size=14,face="bold"),
+        strip.text.y = element_text(angle=0),
+        plot.title = element_text(color="#cc3300",size=22, hjust=0.5)
+  )
 
 
 

@@ -288,71 +288,96 @@ ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2,colour=性別)) +
 ################################## Scales #####################################
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
-    geom_bar(stat="identity") #離散變數
+  geom_bar(stat="identity") #離散變數
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + 
-    geom_bar(stat="identity") #連續變數 
+  geom_bar(stat="identity") #連續變數 
 
 ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-    geom_point() +
-        scale_colour_brewer(palette = "Set3")
+  geom_point() +
+  scale_colour_brewer(palette = "Set3")
 
 #gradient是連續變數，所以使用在離散變數上會出現錯誤
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
-    geom_bar(stat="identity") +
-        scale_fill_gradient(low="#00ff00", high="#ff99cc") 
+  geom_bar(stat="identity") +
+  scale_fill_gradient(low="#00ff00", high="#ff99cc") 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + 
-    geom_bar(stat="identity") +
-        scale_fill_gradient(low="#00ff00", high="#ff99cc")
+  geom_bar(stat="identity") +
+  scale_fill_gradient(low="#00ff00", high="#ff99cc")
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別,colour=項目別)) + 
-    geom_bar(stat="identity") +
-        scale_fill_hue(h=c(0,360),c=50,l=80)
+  geom_bar(stat="identity") +
+  scale_fill_hue(h=c(0,360),c=50,l=80)
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
-    geom_bar(stat="identity") +
-        scale_fill_grey(start=0.2,end=0.8)
+  geom_bar(stat="identity") +
+  scale_fill_grey(start=0.2,end=0.8)
 
 ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-    geom_point() +
-        scale_colour_hue(breaks=c("七美光電","澎湖光電","金門光電")) + 
-            scale_y_continuous(limits=c(2,2.5),breaks=seq(2,2.5,0.01))+
-                scale_x_discrete(limits=c("七美光電","澎湖光電","金門光電"))
+  geom_point() +
+  scale_colour_hue(breaks=c("七美光電","澎湖光電","金門光電")) + 
+  scale_y_continuous(limits=c(2,2.5),breaks=seq(2,2.5,0.01))+
+  scale_x_discrete(limits=c("七美光電","澎湖光電","金門光電"))
 
 ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
-    geom_point() +
-        scale_colour_hue(h=c(0,360),c=50,l=80,breaks=c("七美光電","澎湖光電","金門光電")) + 
-            scale_x_discrete(limits=c("七美光電","澎湖光電","金門光電"), breaks=c("七美光電","澎湖光電"))
+  geom_point() +
+  scale_colour_hue(h=c(0,360),c=50,l=80,breaks=c("七美光電","澎湖光電","金門光電")) + 
+  scale_x_discrete(limits=c("七美光電","澎湖光電","金門光電"), breaks=c("七美光電","澎湖光電"))
 #反轉y軸
 ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,colour=品項)) +
-    geom_line() +
-        scale_y_reverse()
+  geom_line() +
+  scale_y_reverse()
 
 #y軸以log10為刻度
 ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
-    geom_bar(position="dodge",stat="identity") +
-        scale_y_log10() + 
-            guides(colour=guide_legend(reverse = TRUE)) 
+  geom_bar(position="dodge",stat="identity") +
+  scale_y_log10() + 
+  guides(colour=guide_legend(reverse = TRUE)) 
 
 ggplot(ch4sample.exp3_gatable,aes(x=年月,y=年增率,colour=品項,linetype=品項)) +
-    geom_line() +
-        scale_linetype_manual(values=c(5:8))
-            guides(colour=guide_legend(reverse = TRUE)) 
+  geom_line() +
+  scale_linetype_manual(values=c(5:8))
+guides(colour=guide_legend(reverse = TRUE)) 
 
 ggplot(ch4sample.exp1_gatable,aes(x=年齡區間,y=人數,fill=頻率)) +
-    geom_bar(position="dodge",stat="identity") + 
-        scale_fill_manual(values=c("magenta2","#7e9f68","chocolate4","cyan2"))
+  geom_bar(position="dodge",stat="identity") + 
+  scale_fill_manual(values=c("magenta2","#7e9f68","chocolate4","cyan2"))
 
 ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱, shape=光電站名稱)) +
-    geom_point() +
-        scale_shape_manual(values=c(0:15))
+  geom_point() +
+  scale_shape_manual(values=c(0:15))
 
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=有時)) + 
   geom_bar(stat="identity") +
   scale_fill_gradient(name="統計人數",labels=seq(0,350,30),breaks=seq(0,350,30),low="#00ff00", high="#ff99cc")
 
-################################## Scales #####################################
+#缺失值設定
+item.gather.traffic<-c("年月","總指數","交通工具","油料費","汽車","機車")
+item.seq.traffic<-c("總指數","交通工具","油料費","汽車","機車")
 
+ch4sample.exp3_gatable.traffic<-select(ch4sample.exp3, item.gather.traffic)
+ch4sample.exp3_gatable.traffic<-gather(ch4sample.exp3_gatable.traffic,item.seq.traffic,key="品項",value="年增率") #將表格轉成聚集形式
+ch4sample.exp3_gatable.traffic$品項<-factor(ch4sample.exp3_gatable.traffic$品項,levels=item.seq.traffic)
 
+ggplot(ch4sample.exp3_gatable.traffic,aes(x=年月,y=年增率,colour=品項)) +
+  geom_line() +
+  scale_x_date(limits=c(as.Date("2010-01-01","%Y-%m-%d"),as.Date("2018-01-01","%Y-%m-%d"))) +
+  scale_y_continuous(na.value = 0,limits=c(-10,10))
+
+############################# Annotation & Layout #############################
+
+ggplot(ch4sample.exp3,aes(x=年月,y=總指數)) +
+    geom_line(colour="#ec8092") +
+        labs(
+          title = "消費者物價基本分類暨項目群指數",
+          subtitle = "總指數",
+          y="年增率",
+          caption = "主計處"
+        )
+
+ggplot(ch4sample.exp4,aes(x=年月, y=平均單位裝置容量每日發電量, colour=光電站名稱)) +
+  geom_point() +
+  geom_text(aes(label=年度)) +
+  scale_colour_hue(limits=c("七美光電","澎湖光電","金門光電"),breaks=c("七美光電","澎湖光電","金門光電"))
 
 
 

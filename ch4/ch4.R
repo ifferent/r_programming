@@ -3,7 +3,7 @@
 ####                                                                       ####
 #### 完成日期: 2018-07-13                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V4.7                                                            ####
+#### 版本：V4.8                                                            ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.基礎繪圖(圖形)文法的概念                                         ####
@@ -23,6 +23,7 @@
 ####    7.Facets                                                           ####
 ####    8.Scale                                                            ####
 ####    9.文字輔助標示與版面配置                                           ####
+####   10.座標軸設定                                                       ####
 ####                                                                       ####
 ###############################################################################
 ###############################################################################
@@ -424,6 +425,20 @@ ggplot(ch4sample.exp2_matrix,aes(x=分數1,y=分數2)) +
         plot.title = element_text(color="#cc3300",size=22, hjust=0.5)
   )
 
+############################# Coordinate System ###############################
+
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
+  geom_bar(stat="identity") + 
+  coord_flip()
+
+#改為極座標
+ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
+  geom_bar(stat="identity",width=1) + 
+  coord_polar()
+
+ggplot(ch4sample.exp1,aes(x=1,y=有時,fill=項目別)) + 
+  geom_bar(stat="identity") + 
+  coord_polar(theta = "y")
 
 
 

@@ -446,18 +446,44 @@ ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) +
 #改為極座標
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
     geom_bar(stat="identity",width=1) + 
-        coord_polar()
+        coord_polar(theta = "x")
+
+#改為圓餅圖
+y.breaks <- cumsum(rev(ch4sample.exp1$有時)) - rev(ch4sample.exp1$有時)/2
+y.labels <- paste(scales::percent(rev(ch4sample.exp1$有時)/sum(rev(ch4sample.exp1$有時))))
 
 ggplot(ch4sample.exp1,aes(x=1,y=有時,fill=項目別)) + 
     geom_bar(stat="identity") + 
-        coord_polar(theta = "y")
+        coord_polar(theta = "y") + 
+            scale_y_continuous(breaks=y.breaks,labels=y.labels)
 
+#心臟線
+x<-seq(0,2*pi,2*pi/1000)
+heart_line<-tibble(
+        theta = x,
+        cardioid = 2*(0.25-cos(theta))
+      )
 
+ggplot(heart_line,aes(x=theta,y=cardioid)) + 
+    geom_line() + 
+        coord_polar()
 
+#玫瑰線
+rose_line<-tibble(
+    theta = x,
+    rose = cos(9*theta)
+    )
 
+ggplot(rose_line,aes(x=theta,y=rose)) + 
+    geom_line() + 
+        coord_polar()
 
-
-
+############################### Other Graphic #################################
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, fill=光電站名稱)) + 
+    geom_boxplot()
+ggplot(ch4sample.exp3_gatable,aes(x=品項,y=年增率,colour=品項)) + 
+    geom_boxplot() +
+        guides(colour=guide_legend(reverse = TRUE))
 
 
 

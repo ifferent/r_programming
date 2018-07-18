@@ -135,6 +135,7 @@ stat_trans_2 + stat_bin(geom="bar", bins=8, position="identity", alpha=0.3)
 item.gather<-c("年月","總指數","米類及其製品","肉類","蔬菜")
 item.seq<-c("總指數","米類及其製品","肉類","蔬菜")
 
+#利用套件lubridate中的函數make_data可以將年月日合併成為日期的資料型態
 ch4sample.exp3<-mutate(ch4sample.exp3, "年月" = make_date(年,月))
 
 ggplot(ch4sample.exp3,aes(x=年月,y=總指數))+geom_line()
@@ -443,6 +444,16 @@ ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) +
     geom_bar(stat="identity") + 
         coord_flip()
 
+ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, fill=光電站名稱)) + 
+    geom_boxplot() +
+        guides(fill=guide_legend(reverse = TRUE)) +
+            coord_flip()
+
+ggplot(ch4sample.exp3_gatable,aes(x=品項,y=年增率,colour=品項)) + 
+    geom_boxplot() +
+        guides(colour=guide_legend(reverse = TRUE)) +
+            coord_flip()
+
 #改為極座標
 ggplot(ch4sample.exp1,aes(x=項目別,y=有時,fill=項目別)) + 
     geom_bar(stat="identity",width=1) + 
@@ -477,13 +488,4 @@ rose_line<-tibble(
 ggplot(rose_line,aes(x=theta,y=rose)) + 
     geom_line() + 
         coord_polar()
-
-############################### Other Graphic #################################
-ggplot(ch4sample.exp4,aes(x=光電站名稱, y=平均單位裝置容量每日發電量, fill=光電站名稱)) + 
-    geom_boxplot()
-ggplot(ch4sample.exp3_gatable,aes(x=品項,y=年增率,colour=品項)) + 
-    geom_boxplot() +
-        guides(colour=guide_legend(reverse = TRUE))
-
-
 

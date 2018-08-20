@@ -90,26 +90,28 @@ write.csv(out_exp,paste(output_path, "use_base_writ_csv2.csv"),
 
 write_csv(out_exp,paste(output_path, "use_readr_writ_csv.csv"))
 write_excel_csv(out_exp,paste(output_path, "use_readr_writ_excel_csv.csv"))
-###############################################################################
-
-score_range=1:100
-
-sample(score_range,100,replace=FALSE)
-student.score <- sample(score_range,50,replace=TRUE)
-#sample(score_range,50),預設replace是FALSE
-
-transcript <- tibble(score=student.score)
-mean(transcript$score)
-ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
 
 ###############################################################################
 
-student.score<-round(rnorm(50,mean=80,sd=10),0)
-transcript$score<-ifelse(student.score>100,100,student.score)
-mean(transcript$score)
-ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+#1
+pois.lambda <- 7
+dpois(0,pois.lambda)
+#2
+1-dpois(0,pois.lambda)-dpois(1,pois.lambda)
 
-###############################################################################
+1-ppois(1,pois.lambda) # 1 - P[X ≤ 1]
+
+ppois(1, pois.lambda, lower.tail=F) # P[X > 1]
+
+#3
+pois.lambda_per30sec <- pois.lambda/2
+ppois(0, pois.lambda_per30sec, lower.tail=F ) # P[X > 0]
+
+#4
+ppois(4, pois.lambda, lower.tail=F) # P[X > 4]
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 student_score.chinese<-round(rnorm(100,mean=80,sd=10),0)
 student_score.math<-round(rnorm(100,mean=60,sd=30),0)
@@ -134,6 +136,23 @@ ggplot(transcript,aes(歷史))+geom_histogram(stat="bin",bins=10, fill="white",c
 ggplot(transcript,aes(地理))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
 
 write_excel_csv(transcript,"成績單_new.csv")
+
+###############################################################################
+
+score_range=1:100
+
+sample(score_range,100,replace=FALSE)
+student.score <- sample(score_range,50,replace=TRUE)
+#sample(score_range,50),預設replace是FALSE
+
+transcript <- tibble(score=student.score)
+mean(transcript$score)
+ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+
+student.score<-round(rnorm(50,mean=80,sd=10),0)
+transcript$score<-ifelse(student.score>100,100,student.score)
+mean(transcript$score)
+ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
 
 ###############################################################################
 taxrelation.reg_taipei<-select(taxrelation.table_taipei,"公司家數","營業稅年度總稅收")

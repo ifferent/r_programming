@@ -11,8 +11,72 @@ taxrelation.table_taichung<-read_csv("D:/my_code/R_code/presentation_sample_ppt/
 taxrelation.table_taichung2<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/taichung_2.csv",col_names=TRUE)
 taxrelation.table_tainan<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/tainan.csv",col_names=TRUE)
 
+###############################################################################
+name<-c("Alice","Bob","Roddy","Eddie","William",
+        "Howard","Rose","Mary","Daisy","Jack")
+hight<-sample(150:185,10,replace=T)
+
+data.frame (
+  c(1:10),
+  2,
+  3:12,
+  name
+)
+
+data.frame (
+  c(1:9),
+  2,
+  3:12,
+  name
+)#序列資料不等長，無法自動產生，但是單一資料可以自動產生
+
+tibble(
+  c(1:10),
+  2,
+  3:12,
+  name
+)
+
+tibble(
+  profile.name  = name,
+  profile.age   = c(23,22,20,18,24,25,23,20,21,22),
+  profile.hight = hight,
+  profile.sex   = c("F","M","M","M","M","M","F","F","F","M")   
+)
+
+tibble(
+  `@@`       = name,
+  `A~G~E`    = c(23,22,20,18,24,25,23,20,21,22),
+  `  T . T ` = hight,
+  `5000`     = c("F","M","M","M","M","M","F","F","F","M")   
+)#可以使用``符號使特殊符號、空格、數字等成為資料欄的名稱
+
+df_exp<-tibble(
+  profile.name  = name,
+  profile.age   = age,
+  profile.hight = hight,
+  profile.sex   = sex,
+  #與data.frame的最大差別
+  magic_index   = profile.hight/(profile.age*ifelse(profile.sex=="M",1,2)) 
+)
+
+tribble(
+  ~profile.name, ~profile.age, ~profile.hight, ~profile.sex, ~magic_index,
+  #--------------/-------------/---------------/-------------/---------------------
+  "Alice",           23,       hight[1],          "F", df_exp$magic_index[1],
+  "Bob",           22,       hight[2],          "M", df_exp$magic_index[2],
+  "Roddy",           20,       hight[3],          "M", df_exp$magic_index[3],
+  "Eddie",           18,       hight[4],          "M", df_exp$magic_index[4],
+  "William",           24,       hight[5],          "M", df_exp$magic_index[5],
+  "Howard",           25,       hight[6],          "M", df_exp$magic_index[6],
+  "Rose",           23,       hight[7],          "F", df_exp$magic_index[7],
+  "Mary",           20,       hight[8],          "F", df_exp$magic_index[8],
+  "Daisy",           21,       hight[9],          "F", df_exp$magic_index[9],
+  "Jack",           22,      hight[10],          "M", df_exp$magic_index[10]
+)#增加程式可讀性
 
 ###############################################################################
+
 
 score_range=1:100
 

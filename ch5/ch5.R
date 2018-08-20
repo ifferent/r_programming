@@ -113,29 +113,44 @@ ppois(4, pois.lambda, lower.tail=F) # P[X > 4]
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
-student_score.chinese<-round(rnorm(100,mean=80,sd=10),0)
-student_score.math<-round(rnorm(100,mean=60,sd=30),0)
-student_score.history<-round(rnorm(100,mean=90,sd=5),0)
-student_score.geo<-round(rnorm(100,mean=70,sd=20),0)
+transcript <- tibble(
+                        "座號"=1:100,
+                        #round函數主要用來取整數
+                        "國文"=round(rnorm(100, mean=80, sd=10), 0),
+                        "數學"=round(rnorm(100, mean=60, sd=30), 0),
+                        "歷史"=round(rnorm(100, mean=90, sd=5),  0),
+                        "地理"=round(rnorm(100, mean=70, sd=20), 0)
+                    )
 
-transcript <- tibble("座號"=1:100,"國文"=student_score.chinese,"數學"=student_score.math,"歷史"=student_score.history,"地理"=student_score.geo)
-transcript$國文<-ifelse(student_score.chinese>100,100,student_score.chinese)
-transcript$數學<-ifelse(student_score.math>100,100,student_score.math)
-transcript$數學<-ifelse(student_score.math<0,0,student_score.math)
-transcript$歷史<-ifelse(student_score.history>100,100,student_score.history)
-transcript$地理<-ifelse(student_score.geo>100,100,student_score.geo)
+#讓分數不要超過100分或低於0分(負分)
+transcript$國文<-ifelse(transcript$國文>100, 100, transcript$國文)
+transcript$數學<-ifelse(transcript$數學>100, 100, transcript$數學)
+transcript$數學<-ifelse(transcript$數學<  0,   0, transcript$數學)
+transcript$歷史<-ifelse(transcript$歷史>100, 100, transcript$歷史)
+transcript$地理<-ifelse(transcript$地理>100, 100, transcript$地理)
 
 mean(transcript$國文)
 mean(transcript$數學)
 mean(transcript$歷史)
 mean(transcript$地理)
 
-ggplot(transcript,aes(國文))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
-ggplot(transcript,aes(數學))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
-ggplot(transcript,aes(歷史))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
-ggplot(transcript,aes(地理))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
+ggplot(transcript,aes(國文)) +
+    geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
+        geom_line(color="red",stat="bin",bins=20)
 
-write_excel_csv(transcript,"成績單_new.csv")
+ggplot(transcript,aes(數學)) +
+    geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
+        geom_line(color="red",stat="bin",bins=20)
+
+ggplot(transcript,aes(歷史)) +
+    geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
+        geom_line(color="red",stat="bin",bins=20)
+
+ggplot(transcript,aes(地理)) +
+    geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
+        geom_line(color="red",stat="bin",bins=20)
+
+write_excel_csv(transcript,paste(output_path,"成績單.csv"))
 
 ###############################################################################
 

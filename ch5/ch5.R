@@ -60,23 +60,37 @@ df_exp<-tibble(
   magic_index   = profile.hight/(profile.age*ifelse(profile.sex=="M",1,2)) 
 )
 
-tribble(
-  ~profile.name, ~profile.age, ~profile.hight, ~profile.sex, ~magic_index,
-  #--------------/-------------/---------------/-------------/---------------------
-  "Alice",           23,       hight[1],          "F", df_exp$magic_index[1],
-  "Bob",           22,       hight[2],          "M", df_exp$magic_index[2],
-  "Roddy",           20,       hight[3],          "M", df_exp$magic_index[3],
-  "Eddie",           18,       hight[4],          "M", df_exp$magic_index[4],
-  "William",           24,       hight[5],          "M", df_exp$magic_index[5],
-  "Howard",           25,       hight[6],          "M", df_exp$magic_index[6],
-  "Rose",           23,       hight[7],          "F", df_exp$magic_index[7],
-  "Mary",           20,       hight[8],          "F", df_exp$magic_index[8],
-  "Daisy",           21,       hight[9],          "F", df_exp$magic_index[9],
-  "Jack",           22,      hight[10],          "M", df_exp$magic_index[10]
+out_exp<-tribble(
+          ~profile.name, ~profile.age, ~profile.hight, ~profile.sex, ~magic_index,
+        #--------------/-------------/---------------/-------------/---------------------
+               "Alice",           23,       hight[1],          "女", df_exp$magic_index[1],
+                 "Bob",           22,       hight[2],          "男", df_exp$magic_index[2],
+               "Roddy",           20,       hight[3],          "男", df_exp$magic_index[3],
+               "Eddie",           18,       hight[4],          "男", df_exp$magic_index[4],
+             "William",           24,       hight[5],          "男", df_exp$magic_index[5],
+              "Howard",           25,       hight[6],          "男", df_exp$magic_index[6],
+                "Rose",           23,       hight[7],          "女", df_exp$magic_index[7],
+                "Mary",           20,       hight[8],          "女", df_exp$magic_index[8],
+               "Daisy",           21,       hight[9],          "女", df_exp$magic_index[9],
+                "Jack",           22,      hight[10],          "男", df_exp$magic_index[10]
 )#增加程式可讀性
 
 ###############################################################################
+output_path<-c("output/ch5/")
+write.csv(out_exp, paste(output_path, "use_base_writ_csv.csv"), 
+          row.names=F, fileEncoding="UTF-8")
 
+write.csv(out_exp, paste(output_path, "use_base_writ_csv_noutf8.csv"), 
+          row.names=F)
+read_csv(paste(output_path, "use_base_writ_csv_noutf8.csv"),col_names=TRUE)
+#採用預設的編碼，雖然用excel並不會亂碼，但用這個檔案再次給R讀取就會出現悲劇
+
+write.csv(out_exp,paste(output_path, "use_base_writ_csv2.csv"), 
+          row.names=T, fileEncoding="UTF-8")
+
+write_csv(out_exp,paste(output_path, "use_readr_writ_csv.csv"))
+write_excel_csv(out_exp,paste(output_path, "use_readr_writ_excel_csv.csv"))
+###############################################################################
 
 score_range=1:100
 

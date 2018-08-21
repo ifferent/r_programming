@@ -154,6 +154,81 @@ write_excel_csv(transcript,paste(output_path,"成績單.csv"))
 
 ###############################################################################
 
+df <- data.frame(
+    #x.
+    x.uni  = 100:160,
+    x.norm = -10:10,
+    x.f    = 0:10, 
+    x.pois = 0:30
+)
+
+df.base <- data.frame(
+    #x.
+    "均勻分配"       = c(100,160),
+    "常態分配"       = c(-10,10),
+    "F分配"          = c(0,10),
+    "卜瓦松分配"     = c(0,30)
+)
+
+df.tibble <- tibble(
+    "隨機變數"       = -10:10,
+    "-1<=x<=1"       = seq(-1,1,2/20),
+    "p[-1<=x<=1]"    = dnorm(`-1<=x<=1`,mean=0,sd=2)
+)
+
+pois.lambda <- 10
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+x.uni<-100:160
+plot(x.uni,dunif(x.uni,min=120,max=140),type='l')
+
+x.norm<--10:10
+plot(x.norm,dnorm(x.norm,mean=0,sd=2),type='l')
+x.norm<-seq(-10,10,0.001)
+plot(x.norm,dnorm(x.norm,mean=0,sd=2),type='l')
+plot(x.norm,pnorm(x.norm,mean=0,sd=2),type='l')
+
+x.pois<-0:30
+plot(x.pois,dpois(x.pois,pois.lambda),type='h')
+
+curve(dunif(x,min=120,max=140),from=100,to=160)
+curve(dnorm(x,mean=0,sd=2),from=-10,to=10)
+curve(pnorm(x,mean=0,sd=2),from=-10,to=10)
+barplot(dpois(x.pois,pois.lambda))
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#已statistic為主的寫法
+ggplot(df.base, aes(x=均勻分配)) + 
+    stat_function(geo="point",fun = dunif, colour = "red", args=list(min=120,max=140))
+#已geometric為主的寫法
+ggplot(df.base, aes(x=均勻分配)) + 
+    geom_point(stat="function",fun=dunif, args=list(min=120,max=140))
+
+ggplot(df.base, aes(x=常態分配)) + 
+    geom_line(stat="function",fun=dnorm, args=list(mean=0,sd=2))
+ggplot(df.base, aes(x=常態分配)) + 
+    geom_line(stat="function",fun=pnorm, args=list(mean=0,sd=2))
+
+#data.frame沒辦法遞迴的計算
+ggplot(df.tibble) + 
+    geom_line(aes(x=隨機變數),stat="function",
+              fun=dnorm, args=list(mean=0,sd=2)) +
+                  geom_area(aes(x=`-1<=x<=1`,y=`p[-1<=x<=1]`), 
+                            stat="identity", fill="green", alpha="0.4")
+
+#離散分配使用stat="function"計算會有問題，因為會強制變成連續函數
+ggplot(df.base, aes(x=卜瓦松分配)) + 
+    geom_bar(stat="function",fun=dpois, args=list(lambda=pois.lambda))
+
+pois_exp <- tibble(
+    "隨機變數"=0:20,
+    "機率"=dpois(x,pois.lambda)
+)
+ggplot(pois_exp, aes(x=隨機變數, y=機率, fill=機率)) +
+    geom_bar(stat="identity")
+
+###############################################################################
+
 score_range=1:100
 
 sample(score_range,100,replace=FALSE)
@@ -197,7 +272,5 @@ lm(data=taxrelation.reg_kaohsiung,營業稅年度總稅收~公司家數^3)
 lm(data=taxrelation.reg_newtpi,營業稅年度總稅收~公司家數^2)
 lm(data=taxrelation.reg_taichung,營業稅年度總稅收~公司家數^4)
 lm(data=taxrelation.reg_taichung,營業稅年度總稅收~公司家數^2)
-
-
 
 

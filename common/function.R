@@ -39,5 +39,63 @@ m2gg.scope <- function(df, repeats.allowed=T) {
     )
     return(df_out)
 }
+
+###############################################################################
+#U-quadratic distribution
+#http://www.ntrand.com/u-quadratic-distribution/
+duquad<-function(x,b=1)
+{
+    if(b==0){return("Inf")}
+    else{
+        beta<-b/2
+        alpha<-12/(b^3)
+    }
+    if(max(x)>=b||min(x)==0){return("Inf")}
+    output<-alpha*(x-beta)^2
+    output
+}
+
+ruquad<-function(n,b=1)
+{
+    if(b==0){return("Inf")}
+    else{
+        beta<-b/2
+        alpha<-12/(b^3)
+    }
     
+    RN<-runif(n)
+    temp<-(3*RN)/alpha-(beta-alpha)^3
+    output<-sign(temp)*abs(temp)^(1/3)+beta
+    output
+}
+
+###############################################################################
+#sampling distribution
+dsample<-function(x, size=1, time=1, replace=FALSE)
+{
+    output<-vector("double",length(time))
+    for(i in 1:time){
+        output[i]<-mean(sample(x, size = size, replace = replace))
+    }
+    output
+}
+
+
+x<-10+runif(20)*(20-10)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

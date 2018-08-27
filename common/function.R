@@ -70,7 +70,7 @@ ruquad<-function(n,b=1)
 }
 
 ###############################################################################
-#sampling distribution
+#exact sampling distribution
 dsample<-function(x, size=1, time=1, replace=FALSE)
 {
     output<-vector("double",length(time))

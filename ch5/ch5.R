@@ -1,15 +1,43 @@
+###############################################################################
+###############################################################################
+####                                                                       ####
+#### 完成日期: 2018-08-28                                                  ####
+#### 作者：Roddy Hung                                                      ####
+#### 版本：V2.3                                                            ####
+####                                                                       ####
+#### 第4章範例程式:                                                        ####
+####    1.建立資料框                                                       ####
+####    2.將資料框輸出為檔案                                               ####
+####    3.機率分配                                                         ####
+####    4.檢定                                                             ####
+####        i.點估計                                                       ####
+####       ii.區間估計                                                     ####
+####      iii.假設檢定                                                     ####
+####                                                                       ####
+###############################################################################
+###############################################################################
+
+source("common/check_package.R")#檢查是否有未安裝的套件
+source("common/function.R",encoding="utf-8") #將公用自訂函數載起來
+
+###############################################################################
+####                                                                       ####
+#### 載入套件相關使用函數參考:                                             ####
+#### readr: read_csv                                                       ####
+#### dplyr: filter,select,rename,mutate                                    ####
+#### ggplot2: 略                                                           ####
+#### tibble: tibble, tirbble                                               ####
+####                                                                       ####
+###############################################################################
+
 library(readr)
 library(dplyr)
 library(tibble)
 library(ggplot2)
 ################################檔案載入與設定#################################
-taxrelation.table_taipei<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/taipei.csv",col_names=TRUE)
-taxrelation.table_kaohsiung<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/kaohsiung.csv",col_names=TRUE)
-taxrelation.table_kaohsiung2<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/kaohsiung_2.csv",col_names=TRUE)
-taxrelation.table_newtpi<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/new_tpi.csv",col_names=TRUE)
-taxrelation.table_taichung<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/taichung.csv",col_names=TRUE)
-taxrelation.table_taichung2<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/taichung_2.csv",col_names=TRUE)
-taxrelation.table_tainan<-read_csv("D:/my_code/R_code/presentation_sample_ppt/ch5/tainan.csv",col_names=TRUE)
+ch5sample.exp1_path="ch5/sample_data/信用卡卡款.csv"
+
+ch5sample.exp1<-read_csv(ch5sample.exp1_path,col_names=TRUE)
 
 ###############################################################################
 name<-c("Alice","Bob","Roddy","Eddie","William",
@@ -17,62 +45,62 @@ name<-c("Alice","Bob","Roddy","Eddie","William",
 hight<-sample(150:185,10,replace=T)
 
 data.frame (
-  c(1:10),
-  2,
-  3:12,
-  name
+    c(1:10),
+    2,
+    3:12,
+    name
 )
 
 data.frame (
-  c(1:9),
-  2,
-  3:12,
-  name
+    c(1:9),
+    2,
+    3:12,
+    name
 )#序列資料不等長，無法自動產生，但是單一資料可以自動產生
 
 tibble(
-  c(1:10),
-  2,
-  3:12,
-  name
+    c(1:10),
+    2,
+    3:12,
+    name
 )
 
 tibble(
-  profile.name  = name,
-  profile.age   = c(23,22,20,18,24,25,23,20,21,22),
-  profile.hight = hight,
-  profile.sex   = c("F","M","M","M","M","M","F","F","F","M")   
+    profile.name  = name,
+    profile.age   = c(23,22,20,18,24,25,23,20,21,22),
+    profile.hight = hight,
+    profile.sex   = c("F","M","M","M","M","M","F","F","F","M")   
 )
 
 tibble(
-  `@@`       = name,
-  `A~G~E`    = c(23,22,20,18,24,25,23,20,21,22),
-  `  T . T ` = hight,
-  `5000`     = c("F","M","M","M","M","M","F","F","F","M")   
+    `@@`       = name,
+    `A~G~E`    = c(23,22,20,18,24,25,23,20,21,22),
+    `  T . T ` = hight,
+    `5000`     = c("F","M","M","M","M","M","F","F","F","M")   
 )#可以使用``符號使特殊符號、空格、數字等成為資料欄的名稱
 
 df_exp<-tibble(
-  profile.name  = name,
-  profile.age   = age,
-  profile.hight = hight,
-  profile.sex   = sex,
-  #與data.frame的最大差別
-  magic_index   = profile.hight/(profile.age*ifelse(profile.sex=="M",1,2)) 
+    profile.name  = name,
+    profile.age   = age,
+    profile.hight = hight,
+    profile.sex   = sex,
+    #與data.frame的最大差別
+    magic_index   = profile.hight/(profile.age*ifelse(profile.sex=="M",1,2)) 
 )
 
 out_exp<-tribble(
-          ~profile.name, ~profile.age, ~profile.hight, ~profile.sex, ~magic_index,
-        #--------------/-------------/---------------/-------------/---------------------
-               "Alice",           23,       hight[1],          "女", df_exp$magic_index[1],
-                 "Bob",           22,       hight[2],          "男", df_exp$magic_index[2],
-               "Roddy",           20,       hight[3],          "男", df_exp$magic_index[3],
-               "Eddie",           18,       hight[4],          "男", df_exp$magic_index[4],
-             "William",           24,       hight[5],          "男", df_exp$magic_index[5],
-              "Howard",           25,       hight[6],          "男", df_exp$magic_index[6],
-                "Rose",           23,       hight[7],          "女", df_exp$magic_index[7],
-                "Mary",           20,       hight[8],          "女", df_exp$magic_index[8],
-               "Daisy",           21,       hight[9],          "女", df_exp$magic_index[9],
-                "Jack",           22,      hight[10],          "男", df_exp$magic_index[10]
+    ~profile.name, ~profile.age, ~profile.hight, ~profile.sex, ~magic_index,
+    #--------------/-------------/---------------/-------------/---------------------
+    "Alice",        23,           hight[1],       "女",         df_exp$magic_index[1],
+    "Bob",          22,           hight[2],       "男",         df_exp$magic_index[2],
+    "Roddy",        20,           hight[3],       "男",         df_exp$magic_index[3],
+    "Eddie",        18,           hight[4],       "男",         df_exp$magic_index[4],
+    "William",      24,           hight[5],       "男",         df_exp$magic_index[5],
+    "Howard",       25,           hight[6],       "男",         df_exp$magic_index[6],
+    "Rose",         23,           hight[7],       "女",         df_exp$magic_index[7],
+    "Mary",         20,           hight[8],       "女",         df_exp$magic_index[8],
+    "Daisy",        21,           hight[9],       "女",         df_exp$magic_index[9],
+    "Jack",         22,           hight[10],      "男",         df_exp$magic_index[10]
 )#增加程式可讀性
 
 ###############################################################################
@@ -114,13 +142,13 @@ ppois(4, pois.lambda, lower.tail=F) # P[X > 4]
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 transcript <- tibble(
-                        "座號"=1:100,
-                        #round函數主要用來取整數
-                        "國文"=round(rnorm(100, mean=80, sd=10), 0),
-                        "數學"=round(rnorm(100, mean=60, sd=30), 0),
-                        "歷史"=round(rnorm(100, mean=90, sd=5),  0),
-                        "地理"=round(rnorm(100, mean=70, sd=20), 0)
-                    )
+    "座號"=1:100,
+    #round函數主要用來取整數
+    "國文"=round(rnorm(100, mean=80, sd=10), 0),
+    "數學"=round(rnorm(100, mean=60, sd=30), 0),
+    "歷史"=round(rnorm(100, mean=90, sd=5),  0),
+    "地理"=round(rnorm(100, mean=70, sd=20), 0)
+)
 
 #讓分數不要超過100分或低於0分(負分)
 transcript$國文<-ifelse(transcript$國文>100, 100, transcript$國文)
@@ -136,19 +164,19 @@ mean(transcript$地理)
 
 ggplot(transcript,aes(國文)) +
     geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
-        geom_line(color="red",stat="bin",bins=20)
+    geom_line(color="red",stat="bin",bins=20)
 
 ggplot(transcript,aes(數學)) +
     geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
-        geom_line(color="red",stat="bin",bins=20)
+    geom_line(color="red",stat="bin",bins=20)
 
 ggplot(transcript,aes(歷史)) +
     geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
-        geom_line(color="red",stat="bin",bins=20)
+    geom_line(color="red",stat="bin",bins=20)
 
 ggplot(transcript,aes(地理)) +
     geom_histogram(stat="bin",bins=10, fill="white",colour="black") +
-        geom_line(color="red",stat="bin",bins=20)
+    geom_line(color="red",stat="bin",bins=20)
 
 write_excel_csv(transcript,paste(output_path,"成績單.csv"))
 
@@ -213,8 +241,8 @@ ggplot(df.base, aes(x=常態分配)) +
 ggplot(df.tibble) + 
     geom_line(aes(x=隨機變數),stat="function",
               fun=dnorm, args=list(mean=0,sd=2)) +
-                  geom_area(aes(x=`-1<=x<=1`,y=`p[-1<=x<=1]`), 
-                            stat="identity", fill="green", alpha="0.4")
+    geom_area(aes(x=`-1<=x<=1`,y=`p[-1<=x<=1]`), 
+              stat="identity", fill="green", alpha="0.4")
 
 #離散分配使用stat="function"計算會有問題，因為會強制變成連續函數
 ggplot(df.base, aes(x=卜瓦松分配)) + 
@@ -229,48 +257,37 @@ ggplot(pois_exp, aes(x=隨機變數, y=機率, fill=機率)) +
 
 ###############################################################################
 
-score_range=1:100
 
-sample(score_range,100,replace=FALSE)
-student.score <- sample(score_range,50,replace=TRUE)
-#sample(score_range,50),預設replace是FALSE
 
-transcript <- tibble(score=student.score)
-mean(transcript$score)
-ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
 
-student.score<-round(rnorm(50,mean=80,sd=10),0)
-transcript$score<-ifelse(student.score>100,100,student.score)
-mean(transcript$score)
-ggplot(transcript,aes(score))+geom_histogram(stat="bin",bins=10, fill="white",colour="black")+geom_line(color="red",stat="bin",bins=10)
 
-###############################################################################
-taxrelation.reg_taipei<-select(taxrelation.table_taipei,"公司家數","營業稅年度總稅收")
-taxrelation.reg_kaohsiung<-select(taxrelation.table_kaohsiung,"公司家數","營業稅年度總稅收")
-taxrelation.reg_kaohsiung2<-select(taxrelation.table_kaohsiung2,"公司家數","營業稅年度總稅收")
-taxrelation.reg_newtpi<-select(taxrelation.table_newtpi,"公司家數","營業稅年度總稅收")
-taxrelation.reg_taichung<-select(taxrelation.table_taichung,"公司家數","營業稅年度總稅收")
-taxrelation.reg_taichung2<-select(taxrelation.table_taichung2,"公司家數","營業稅年度總稅收")
-taxrelation.reg_tainan<-select(taxrelation.table_tainan,"公司家數","營業稅年度總稅收")
 
-###############################################################################
 
-ggplot(taxrelation.table_taipei,aes(x=公司家數,y=營業稅年度總稅收))+geom_point()+stat_smooth()+ggtitle("台北市營業稅稅收與公司家數關係")+theme(plot.title=element_text(hjust=0.5))
 
-ggplot(taxrelation.table_kaohsiung,aes(x=公司家數,y=營業稅年度總稅收))+geom_point()+stat_smooth()+ggtitle("高雄市營業稅稅收與公司家數關係")+theme(plot.title=element_text(hjust=0.5))
-ggplot(taxrelation.table_kaohsiung2,aes(x=公司家數,y=營業稅年度總稅收))+geom_point()+stat_smooth()+ggtitle("高雄市營業稅稅收與公司家數關係(局部放大)")+theme(plot.title=element_text(hjust=0.5))
 
-ggplot(taxrelation.table_newtpi,aes(x=公司家數,y=營業稅年度總稅收))+geom_point()+stat_smooth()+ggtitle("新北市營業稅稅收與公司家數關係")+theme(plot.title=element_text(hjust=0.5))
 
-ggplot(taxrelation.table_taichung,aes(x=公司家數,y=營業稅年度總稅收))+geom_point()+stat_smooth()+ggtitle("台中市營業稅稅收與公司家數關係")+theme(plot.title=element_text(hjust=0.5))
-ggplot(taxrelation.table_tainan,aes(x=公司家數,y=營業稅年度總稅收))+geom_point()+stat_smooth()+ggtitle("台南市營業稅稅收與公司家數關係(局部放大)")+theme(plot.title=element_text(hjust=0.5))
 
-###############################################################################
 
-lm(data=taxrelation.reg_taipei,營業稅年度總稅收~公司家數^2)
-lm(data=taxrelation.reg_kaohsiung,營業稅年度總稅收~公司家數^3)
-lm(data=taxrelation.reg_newtpi,營業稅年度總稅收~公司家數^2)
-lm(data=taxrelation.reg_taichung,營業稅年度總稅收~公司家數^4)
-lm(data=taxrelation.reg_taichung,營業稅年度總稅收~公司家數^2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -257,6 +257,58 @@ ggplot(pois_exp, aes(x=隨機變數, y=機率, fill=機率)) +
 
 ###############################################################################
 
+popu<-tibble(
+    index = 1:20000,
+    uni   = runif(index,min=40000,max=58000),
+    exp   = rexp(index,rate=1),
+    uquad = ruquad(index,b=5800)
+)
+
+cen.lim.2<-tibble(
+    x.uni   = dsample(popu$uni,size=2, time=1000),
+    x.exp   = dsample(popu$exp,size=2, time=1000),
+    x.uquad = dsample(popu$uquad,size=2, time=1000)
+)
+
+cen.lim.10<-tibble(
+    x.uni   = dsample(popu$uni,size=5, time=1000),
+    x.exp   = dsample(popu$exp,size=5, time=1000),
+    x.uquad = dsample(popu$uquad,size=5, time=1000)
+)
+
+cen.lim.30<-tibble(
+    x.uni   = dsample(popu$uni,size=30, time=1000),
+    x.exp   = dsample(popu$exp,size=30, time=1000),
+    x.uquad = dsample(popu$uquad,size=30, time=1000)
+)
+cen.lim.100<-tibble(
+    x.uni   = dsample(popu$uni,size=100, time=1000),
+    x.exp   = dsample(popu$exp,size=100, time=1000),
+    x.uquad = dsample(popu$uquad,size=100, time=1000)
+)
+
+ggplot(cen.lim.2,aes(x=x.uquad)) +
+    geom_area(stat="bin",binwidth=250) +
+    scale_x_continuous(limits = c(0,5800))
+ggplot(cen.lim.10,aes(x=x.uquad)) +
+    geom_area(stat="bin",binwidth=250) +
+    scale_x_continuous(limits = c(0,5800))
+ggplot(cen.lim.30,aes(x=x.uquad)) +
+    geom_area(stat="bin",binwidth=250) +
+    scale_x_continuous(limits = c(0,5800))
+ggplot(cen.lim.100,aes(x=x.uquad)) +
+    geom_area(stat="bin",binwidth=250) +
+    scale_x_continuous(limits = c(0,5800))
+
+#cen.test<-tibble(
+#x.uni   = dsample(popu$uni,size=2, time=1000),
+#x.exp   = dsample(popu$exp,size=2, time=1000),
+#x.uquad = dsample(popu$uquad,size=2, time=100)
+#)
+#ggplot(cen.test,aes(x=x.uquad)) +
+#    geom_area(stat="bin",binwidth=250) +
+#    scale_x_continuous(limits = c(0,5800))
+###############################################################################
 
 
 

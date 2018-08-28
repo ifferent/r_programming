@@ -309,6 +309,102 @@ ggplot(cen.lim.100,aes(x=x.uquad)) +
 #    geom_area(stat="bin",binwidth=250) +
 #    scale_x_continuous(limits = c(0,5800))
 ###############################################################################
+popu.est.m<-52000
+popu.est.sd<-10000
+
+popu.person_info<-tibble(
+    member.ID = 1:8000,
+    salary    = rnorm(8000, mean=popu.est.m, sd=popu.est.sd)
+)
+
+#population
+popu.m<-mean(person_info$salary)
+popu.sd<-sd(person_info$salary)
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#點估計
+n.2 = sample(popu.person_info$salary, 2)
+mean(n.2)
+sd(n.2)
+#計算標準偏差(sem)
+sem.n2<-popu.est.sd/sqrt(length(n.2))
+#計算無限母體平均落在樣本平均數+-$500的機率
+up.interval<-popu.est.m + 500
+down.interval<-popu.est.m - 500
+pnorm(up.interval, mean=popu.est.m, sd=sem.n2) -
+    pnorm(down.interval, mean=popu.est.m, sd=sem.n2)
+#實際有限母體與樣本平均數+-$500的機率
+abs(popu.m - mean(n.2))
+#計算標準偏差(sem)
+sem.n2<-popu.sd/sqrt(length(n.2))
+pnorm(up.interval, mean=popu.m, sd=sem.n2) -
+    pnorm(down.interval, mean=popu.m, sd=sem.n2)
+
+#*********!!!!!!!!*********!!!!!!!!*******
+n.10 = sample(popu.person_info$salary, 10)
+mean(n.10)
+sd(n.10)
+#計算標準偏差(sem)
+sem.n10<-popu.est.sd/sqrt(length(n.10))
+#計算無限母體平均落在樣本平均數+-$500的機率
+pnorm(up.interval, mean=popu.est.m, sd=sem.n10) -
+    pnorm(down.interval, mean=popu.est.m, sd=sem.n10)
+#實際有限母體與樣本平均數+-$500的機率
+abs(popu.m - mean(n.10))
+#計算標準偏差(sem)
+sem.n10<-popu.sd/sqrt(length(n.10))
+pnorm(up.interval, mean=popu.m, sd=sem.n10) -
+    pnorm(down.interval, mean=popu.m, sd=sem.n10)
+
+#*********!!!!!!!!*********!!!!!!!!*******
+n.30 = sample(popu.person_info$salary, 30)
+mean(n.30)
+sd(n.30)
+#計算標準偏差(sem)
+sem.n30<-popu.est.sd/sqrt(length(n.30))
+#計算無限母體平均落在樣本平均數+-$500的機率
+pnorm(up.interval, mean=popu.est.m, sd=sem.n30) -
+    pnorm(down.interval, mean=popu.est.m, sd=sem.n30)
+#實際有限母體與樣本平均數+-$500的機率
+abs(popu.m - mean(n.30))
+#計算標準偏差(sem)
+sem.n30<-popu.sd/sqrt(length(n.30))
+pnorm(up.interval, mean=popu.m, sd=sem.n30) -
+    pnorm(down.interval, mean=popu.m, sd=sem.n30)
+
+#*********!!!!!!!!*********!!!!!!!!*******
+n.100 = sample(popu.person_info$salary, 100)
+mean(n.100)
+sd(n.100)
+#計算標準偏差(sem)
+sem.n100<-popu.est.sd/sqrt(length(n.100))
+#計算無限母體平均落在樣本平均數+-$500的機率
+pnorm(up.interval, mean=popu.est.m, sd=sem.n100) -
+    pnorm(down.interval, mean=popu.est.m, sd=sem.n100)
+#實際有限母體與樣本平均數+-$500的機率
+abs(popu.m - mean(n.100))
+#計算標準偏差(sem)
+sem.n100<-popu.sd/sqrt(length(n.100))
+pnorm(up.interval, mean=popu.m, sd=sem.n100) -
+    pnorm(down.interval, mean=popu.m, sd=sem.n100)
+
+#*********!!!!!!!!*********!!!!!!!!*******
+n.500 = sample(popu.person_info$salary, 500)
+mean(n.500)
+sd(n.500)
+#計算標準偏差(sem)
+sem.n500<-popu.est.sd/sqrt(length(n.500))
+#計算無限母體平均落在樣本平均數+-$500的機率
+pnorm(up.interval, mean=popu.est.m, sd=sem.n500) -
+    pnorm(down.interval, mean=popu.est.m, sd=sem.n500)
+#實際母體與樣本平均數+-$500的機率
+abs(popu.m - mean(n.500))
+#計算標準偏差(sem)
+sem.n500<-popu.sd/sqrt(length(n.500))
+pnorm(up.interval, mean=popu.m, sd=sem.n500) -
+    pnorm(down.interval, mean=popu.m, sd=sem.n500)
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 
 

@@ -400,7 +400,7 @@ pnorm(up.interval.est, mean=popu.m, sd=sem.n10) -
 df.est<-tibble(
     "取樣分佈(n=10)"   = (popu.est.m.10-3.5*sem.n10):(popu.est.m.10+3.5*sem.n10),
     "-500<=x<=500"    = seq(down.interval.10,up.interval.10,(up.interval.10-down.interval.10)/(length(`取樣分佈(n=10)`)-1)),
-    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n10)
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m.10, sd=sem.n10)
 )
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=10)`), stat="function", fun=dnorm, 
@@ -492,16 +492,16 @@ popu.est.m.500<-mean(n.500)
 popu.est.sd.500<-sd(n.500)
 #計算標準偏差(sem)
 sem.n500<-popu.sd/sqrt(length(n.500))
-up.interval<-popu.est.m.500 + 500
-down.interval<-popu.est.m.500 - 500
+up.interval.500<-popu.est.m.500 + 500
+down.interval.500<-popu.est.m.500 - 500
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差未知)
-pnorm(up.interval, mean=popu.est.m.500, sd=popu.est.sd.500) -
-    pnorm(down.interval, mean=popu.est.m.500, sd=popu.est.sd.500)
+pnorm(up.interval.500, mean=popu.est.m.500, sd=popu.est.sd.500) -
+    pnorm(down.interval.500, mean=popu.est.m.500, sd=popu.est.sd.500)
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差已知)
-pnorm(up.interval, mean=popu.m, sd=sem.n500) -
-    pnorm(down.interval, mean=popu.m, sd=sem.n500)
+pnorm(up.interval.500, mean=popu.m, sd=sem.n500) -
+    pnorm(down.interval.500, mean=popu.m, sd=sem.n500)
 
 
 #母體平均值與取樣平均值的差值
@@ -513,7 +513,7 @@ pnorm(up.interval.est, mean=popu.m, sd=sem.n500) -
 
 df.est<-tibble(
     "取樣分佈(n=500)"   = (popu.est.m.500-3.5*sem.n500):(popu.est.m.500+3.5*sem.n500),
-    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=500)`)-1)),
+    "-500<=x<=500"    = seq(down.interval.500,up.interval.500,(up.interval.500-down.interval.500)/(length(`取樣分佈(n=500)`)-1)),
     "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m.500, sd=sem.n500)
 )
 ggplot(df.est) +
@@ -525,14 +525,64 @@ ggplot(df.est) +
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#區間估計與假設檢定
+#母體平均數與標準差未知
+inter.est.m<-mean(ch5sample.exp1$"卡款")
+inter.est.sd<-sd(ch5sample.exp1$"卡款")
+#使用t分配取自由度為樣本大小-1
+df.sample<-length(ch5sample.exp1$"卡款")-1
+#信賴區間95%
+alpha.half<-(1-0.95)/2
+t_statistical<-qt(alpha.half,df=df.sample)
+#利用弱大數法則計算樣本標準差
+sem.est<-inter.est.sd/sqrt(length(ch5sample.exp1$"卡款"))
+#計算邊際誤差
+margin_err<-abs(t_statistical)*sem.est
+
+up.interval.unknow<-inter.est.m + margin_err
+down.interval.unknow<-inter.est.m - margin_err
+df.est.unknow<-tibble(
+    "取樣分佈"          = (inter.est.m-3.5*sem.est):(inter.est.m+3.5*sem.est),
+    "x_interval"        = seq(down.interval.unknow,up.interval.unknow,(up.interval.unknow-down.interval.unknow)/(length(取樣分佈)-1)),
+    "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sem.est)   
+)
+
+ggplot(df.est.unknow) +
+    geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
+              args=list(mean=inter.est.m, sd=sem.est)) +
+    geom_area(aes(x=x_interval, y=`p[x+-margin_err]`), stat="identity", alpha=0.5,fill="#e67300") +
+    annotate("segment", x=inter.est.m, xend=inter.est.m, 
+             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sem.est),colour="#99004d", size=1)
 
 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#區間估計與假設檢定
+#母體平均數與標準差已知
 
+inter.est.m<-mean(ch5sample.exp1$"卡款")
+inter.est.sd<-4007
+#信賴區間95%
+alpha.half<-(1-0.95)/2
+z<-qnorm(alpha.half)
+#利用弱大數法則計算樣本標準差
+sem.est<-inter.est.sd/sqrt(length(ch5sample.exp1$"卡款"))
+#計算邊際誤差
+margin_err<-abs(z)*sem.est
 
+up.interval.know<-inter.est.m + margin_err
+down.interval.know<-inter.est.m - margin_err
+df.est.unknow<-tibble(
+    "取樣分佈"          = (inter.est.m-3.5*sem.est):(inter.est.m+3.5*sem.est),
+    "x_interval"        = seq(down.interval.know,up.interval.know,(up.interval.know-down.interval.know)/(length(取樣分佈)-1)),
+    "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sem.est)   
+)
 
-
-
-
+ggplot(df.est.unknow) +
+    geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
+              args=list(mean=inter.est.m, sd=sem.est)) +
+    geom_area(aes(x=x_interval, y=`p[x+-margin_err]`), stat="identity", alpha=0.5,fill="#e67300") +
+    annotate("segment", x=inter.est.m, xend=inter.est.m, 
+             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sem.est),colour="#99004d", size=1)
 
 
 

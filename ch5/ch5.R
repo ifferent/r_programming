@@ -120,7 +120,7 @@ write_csv(out_exp,paste(output_path, "use_readr_writ_csv.csv"))
 write_excel_csv(out_exp,paste(output_path, "use_readr_writ_excel_csv.csv"))
 
 ###############################################################################
-
+#卜瓦松分配例題
 #1
 pois.lambda <- 7
 dpois(0,pois.lambda)
@@ -139,6 +139,17 @@ ppois(0, pois.lambda_per30sec, lower.tail=F ) # P[X > 0]
 ppois(4, pois.lambda, lower.tail=F) # P[X > 4]
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#均勻分配例題
+#1
+(punif(48,min=45,max=60)-punif(47,min=40,max=60)) +
+    (punif(52,min=40,max=60)-punif(51,min=40,max=60)) +
+        (punif(58,min=40,max=60)-punif(57,min=40,max=60))
+
+#2
+(punif(48,min=40,max=60)-punif(47,min=40,max=60)) +
+    (punif(52,min=40,max=60)-punif(51,min=40,max=60)) +
+    (punif(58,min=40,max=60)-punif(57,min=40,max=60))
+
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 transcript <- tibble(
@@ -256,7 +267,7 @@ ggplot(pois_exp, aes(x=隨機變數, y=機率, fill=機率)) +
     geom_bar(stat="identity")
 
 ###############################################################################
-
+#中央極限定理
 popu<-tibble(
     index = 1:20000,
     uni   = runif(index,min=40000,max=58000),
@@ -309,100 +320,209 @@ ggplot(cen.lim.100,aes(x=x.uquad)) +
 #    geom_area(stat="bin",binwidth=250) +
 #    scale_x_continuous(limits = c(0,5800))
 ###############################################################################
-popu.est.m<-52000
-popu.est.sd<-10000
-
+# popu.m      :母體平均值
+# popu.sd     :母體標準差
+# popu.est.m  :取樣平均值
+# popu.est.sd :取樣標準差
 popu.person_info<-tibble(
     member.ID = 1:8000,
-    salary    = rnorm(8000, mean=popu.est.m, sd=popu.est.sd)
+    salary    = rnorm(8000, mean=52000, sd=6000)
 )
 
 #population
-popu.m<-mean(person_info$salary)
-popu.sd<-sd(person_info$salary)
+popu.m<-mean(popu.person_info$salary)
+popu.sd<-sd(popu.person_info$salary)
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #點估計
-n.2 = sample(popu.person_info$salary, 2)
-mean(n.2)
-sd(n.2)
-#計算標準偏差(sem)
-sem.n2<-popu.est.sd/sqrt(length(n.2))
-#計算無限母體平均落在樣本平均數+-$500的機率
-up.interval<-popu.est.m + 500
-down.interval<-popu.est.m - 500
-pnorm(up.interval, mean=popu.est.m, sd=sem.n2) -
-    pnorm(down.interval, mean=popu.est.m, sd=sem.n2)
-#實際有限母體與樣本平均數+-$500的機率
-abs(popu.m - mean(n.2))
+n.2 <- sample(popu.person_info$salary, 2)
+popu.est.m<-mean(n.2)
+popu.est.sd<-sd(n.2)
 #計算標準偏差(sem)
 sem.n2<-popu.sd/sqrt(length(n.2))
+up.interval<-popu.est.m + 500
+down.interval<-popu.est.m - 500
+
+#計算無限母體平均落在樣本平均數+-$500的機率
+pnorm(up.interval, mean=popu.est.m, sd=sem.n2) -
+    pnorm(down.interval, mean=popu.est.m, sd=sem.n2)
+
+#實際有限母體與樣本平均數+-$500的機率
 pnorm(up.interval, mean=popu.m, sd=sem.n2) -
     pnorm(down.interval, mean=popu.m, sd=sem.n2)
 
+
+#母體平均值與取樣平均值的差值
+abs(popu.m - popu.est.m)
+up.interval.est<-popu.est.m + 5500
+down.interval.est<-popu.est.m - 5500
+pnorm(up.interval.est, mean=popu.m, sd=sem.n2) -
+    pnorm(down.interval.est, mean=popu.m, sd=sem.n2)
+
+df.est<-tibble(
+    "取樣分佈(n=2)"   = (popu.est.m-3.5*sem.n2):(popu.est.m+3.5*sem.n2),
+    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=2)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n2)
+)
+ggplot(df.est) +
+    geom_line(aes(x=`取樣分佈(n=2)`), stat="function", fun=dnorm, 
+              args=list(mean=popu.est.m, sd=sem.n2)) +
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n2), 
+             colour="#99004d", size=1)
+
+
 #*********!!!!!!!!*********!!!!!!!!*******
 n.10 = sample(popu.person_info$salary, 10)
-mean(n.10)
-sd(n.10)
+popu.est.m<-mean(n.10)
+popu.est.sd<-sd(n.10)
 #計算標準偏差(sem)
-sem.n10<-popu.est.sd/sqrt(length(n.10))
+sem.n10<-popu.sd/sqrt(length(n.10))
+up.interval<-popu.est.m + 500
+down.interval<-popu.est.m - 500
+
 #計算無限母體平均落在樣本平均數+-$500的機率
 pnorm(up.interval, mean=popu.est.m, sd=sem.n10) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n10)
+
 #實際有限母體與樣本平均數+-$500的機率
-abs(popu.m - mean(n.10))
-#計算標準偏差(sem)
-sem.n10<-popu.sd/sqrt(length(n.10))
 pnorm(up.interval, mean=popu.m, sd=sem.n10) -
     pnorm(down.interval, mean=popu.m, sd=sem.n10)
 
+
+#母體平均值與取樣平均值的差值
+abs(popu.m - popu.est.m)
+up.interval.est<-popu.est.m + 5500
+down.interval.est<-popu.est.m - 5500
+pnorm(up.interval.est, mean=popu.m, sd=sem.n10) -
+    pnorm(down.interval.est, mean=popu.m, sd=sem.n10)
+
+df.est<-tibble(
+    "取樣分佈(n=10)"   = (popu.est.m-3.5*sem.n10):(popu.est.m+3.5*sem.n10),
+    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=10)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n10)
+)
+ggplot(df.est) +
+    geom_line(aes(x=`取樣分佈(n=10)`), stat="function", fun=dnorm, 
+              args=list(mean=popu.est.m, sd=sem.n10)) +
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n10), 
+             colour="#99004d", size=1)
+
+
 #*********!!!!!!!!*********!!!!!!!!*******
 n.30 = sample(popu.person_info$salary, 30)
-mean(n.30)
-sd(n.30)
+popu.est.m<-mean(n.30)
+popu.est.sd<-sd(n.30)
 #計算標準偏差(sem)
-sem.n30<-popu.est.sd/sqrt(length(n.30))
+sem.n30<-popu.sd/sqrt(length(n.30))
+up.interval<-popu.est.m + 500
+down.interval<-popu.est.m - 500
+
 #計算無限母體平均落在樣本平均數+-$500的機率
 pnorm(up.interval, mean=popu.est.m, sd=sem.n30) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n30)
+
 #實際有限母體與樣本平均數+-$500的機率
-abs(popu.m - mean(n.30))
-#計算標準偏差(sem)
-sem.n30<-popu.sd/sqrt(length(n.30))
 pnorm(up.interval, mean=popu.m, sd=sem.n30) -
     pnorm(down.interval, mean=popu.m, sd=sem.n30)
 
+
+#母體平均值與取樣平均值的差值
+abs(popu.m - popu.est.m)
+up.interval.est<-popu.est.m + 5500
+down.interval.est<-popu.est.m - 5500
+pnorm(up.interval.est, mean=popu.m, sd=sem.n30) -
+    pnorm(down.interval.est, mean=popu.m, sd=sem.n30)
+
+df.est<-tibble(
+    "取樣分佈(n=30)"   = (popu.est.m-3.5*sem.n30):(popu.est.m+3.5*sem.n30),
+    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=30)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n30)
+)
+ggplot(df.est) +
+    geom_line(aes(x=`取樣分佈(n=30)`), stat="function", fun=dnorm, 
+              args=list(mean=popu.est.m, sd=sem.n30)) +
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n30), 
+             colour="#99004d", size=1)
+             
+             
 #*********!!!!!!!!*********!!!!!!!!*******
 n.100 = sample(popu.person_info$salary, 100)
-mean(n.100)
-sd(n.100)
+popu.est.m<-mean(n.100)
+popu.est.sd<-sd(n.100)
 #計算標準偏差(sem)
-sem.n100<-popu.est.sd/sqrt(length(n.100))
+sem.n100<-popu.sd/sqrt(length(n.100))
+up.interval<-popu.est.m + 500
+down.interval<-popu.est.m - 500
+
 #計算無限母體平均落在樣本平均數+-$500的機率
 pnorm(up.interval, mean=popu.est.m, sd=sem.n100) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n100)
+
 #實際有限母體與樣本平均數+-$500的機率
-abs(popu.m - mean(n.100))
-#計算標準偏差(sem)
-sem.n100<-popu.sd/sqrt(length(n.100))
 pnorm(up.interval, mean=popu.m, sd=sem.n100) -
     pnorm(down.interval, mean=popu.m, sd=sem.n100)
 
+
+#母體平均值與取樣平均值的差值
+abs(popu.m - popu.est.m)
+up.interval.est<-popu.est.m + 5500
+down.interval.est<-popu.est.m - 5500
+pnorm(up.interval.est, mean=popu.m, sd=sem.n100) -
+    pnorm(down.interval.est, mean=popu.m, sd=sem.n100)
+
+df.est<-tibble(
+    "取樣分佈(n=100)"   = (popu.est.m-3.5*sem.n100):(popu.est.m+3.5*sem.n100),
+    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=100)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n100)
+)
+ggplot(df.est) +
+    geom_line(aes(x=`取樣分佈(n=100)`), stat="function", fun=dnorm, 
+              args=list(mean=popu.est.m, sd=sem.n100)) +
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n100), 
+             colour="#99004d", size=1)
+
+
 #*********!!!!!!!!*********!!!!!!!!*******
 n.500 = sample(popu.person_info$salary, 500)
-mean(n.500)
-sd(n.500)
+popu.est.m<-mean(n.500)
+popu.est.sd<-sd(n.500)
 #計算標準偏差(sem)
-sem.n500<-popu.est.sd/sqrt(length(n.500))
+sem.n500<-popu.sd/sqrt(length(n.500))
+up.interval<-popu.est.m + 500
+down.interval<-popu.est.m - 500
+
 #計算無限母體平均落在樣本平均數+-$500的機率
 pnorm(up.interval, mean=popu.est.m, sd=sem.n500) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n500)
-#實際母體與樣本平均數+-$500的機率
-abs(popu.m - mean(n.500))
-#計算標準偏差(sem)
-sem.n500<-popu.sd/sqrt(length(n.500))
+
+#實際有限母體與樣本平均數+-$500的機率
 pnorm(up.interval, mean=popu.m, sd=sem.n500) -
     pnorm(down.interval, mean=popu.m, sd=sem.n500)
+
+
+#母體平均值與取樣平均值的差值
+abs(popu.m - popu.est.m)
+up.interval.est<-popu.est.m + 5500
+down.interval.est<-popu.est.m - 5500
+pnorm(up.interval.est, mean=popu.m, sd=sem.n500) -
+    pnorm(down.interval.est, mean=popu.m, sd=sem.n500)
+
+df.est<-tibble(
+    "取樣分佈(n=500)"   = (popu.est.m-3.5*sem.n500):(popu.est.m+3.5*sem.n500),
+    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=500)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n500)
+)
+ggplot(df.est) +
+    geom_line(aes(x=`取樣分佈(n=500)`), stat="function", fun=dnorm, 
+              args=list(mean=popu.est.m, sd=sem.n500)) +
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5,fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n500), 
+             colour="#99004d", size=1)
+
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 

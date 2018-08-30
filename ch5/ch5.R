@@ -268,62 +268,62 @@ ggplot(pois_exp, aes(x=隨機變數, y=機率, fill=機率)) +
 
 ###############################################################################
 #中央極限定理
+size<-3000
 popu<-tibble(
-    index = 1:20000,
-    uni   = runif(index,min=40000,max=58000),
-    exp   = rexp(index,rate=1),
-    uquad = ruquad(index,b=5800)
+    uni   = runif(size,min=0,max=50),
+    exp   = 10*rexp(size,rate=1),
+    uquad = ruquad(size,b=50)
 )
+ggplot(popu,aes(x=popu$exp))+geom_histogram(binwidth=0.5)
+hist(popu$exp,breaks=50)
 
 cen.lim.2<-tibble(
-    x.uni   = dsample(popu$uni,size=2, time=1000),
-    x.exp   = dsample(popu$exp,size=2, time=1000),
-    x.uquad = dsample(popu$uquad,size=2, time=1000)
+    x.uni   = dsample(popu$uni,size=2, time=3000),
+    x.exp   = dsample(popu$exp,size=2, time=3000),
+    x.uquad = dsample(popu$uquad,size=2, time=3000)
+)
+
+cen.lim.5<-tibble(
+    x.uni   = dsample(popu$uni,size=5, time=3000),
+    x.exp   = dsample(popu$exp,size=5, time=3000),
+    x.uquad = dsample(popu$uquad,size=5, time=3000)
 )
 
 cen.lim.10<-tibble(
-    x.uni   = dsample(popu$uni,size=5, time=1000),
-    x.exp   = dsample(popu$exp,size=5, time=1000),
-    x.uquad = dsample(popu$uquad,size=5, time=1000)
+    x.uni   = dsample(popu$uni,size=10, time=3000),
+    x.exp   = dsample(popu$exp,size=10, time=3000),
+    x.uquad = dsample(popu$uquad,size=10, time=3000)
 )
-
 cen.lim.30<-tibble(
-    x.uni   = dsample(popu$uni,size=30, time=1000),
-    x.exp   = dsample(popu$exp,size=30, time=1000),
-    x.uquad = dsample(popu$uquad,size=30, time=1000)
-)
-cen.lim.100<-tibble(
-    x.uni   = dsample(popu$uni,size=100, time=1000),
-    x.exp   = dsample(popu$exp,size=100, time=1000),
-    x.uquad = dsample(popu$uquad,size=100, time=1000)
+    x.uni   = dsample(popu$uni,size=30, time=3000),
+    x.exp   = dsample(popu$exp,size=30, time=3000),
+    x.uquad = dsample(popu$uquad,size=30, time=3000)
 )
 
-ggplot(cen.lim.2,aes(x=x.uquad)) +
-    geom_area(stat="bin",binwidth=250) +
-    scale_x_continuous(limits = c(0,5800))
-ggplot(cen.lim.10,aes(x=x.uquad)) +
-    geom_area(stat="bin",binwidth=250) +
-    scale_x_continuous(limits = c(0,5800))
-ggplot(cen.lim.30,aes(x=x.uquad)) +
-    geom_area(stat="bin",binwidth=250) +
-    scale_x_continuous(limits = c(0,5800))
-ggplot(cen.lim.100,aes(x=x.uquad)) +
-    geom_area(stat="bin",binwidth=250) +
-    scale_x_continuous(limits = c(0,5800))
+central_lim<-tibble(
+    "取樣"      = c(popu$uni,  cen.lim.2$x.uni,  cen.lim.10$x.uni,  cen.lim.30$x.uni,  cen.lim.100$x.uni,
+                    popu$exp,  cen.lim.2$x.exp,  cen.lim.10$x.exp,  cen.lim.30$x.exp,  cen.lim.100$x.exp,
+                    popu$uquad,cen.lim.2$x.uquad,cen.lim.10$x.uquad,cen.lim.30$x.uquad,cen.lim.100$x.uquad),
+    "母體分配"  = c(rep("uni",15000),rep("exp",15000),rep("uquad",15000)),
+    "抽樣數(n)" = c(rep(0,3000), rep(2,3000), rep(5,3000), rep(10,3000), rep(30,3000),
+                    rep(0,3000), rep(2,3000), rep(5,3000), rep(10,3000), rep(30,3000),
+                    rep(0,3000), rep(2,3000), rep(5,3000), rep(10,3000), rep(30,3000))
+)
 
-#cen.test<-tibble(
-#x.uni   = dsample(popu$uni,size=2, time=1000),
-#x.exp   = dsample(popu$exp,size=2, time=1000),
-#x.uquad = dsample(popu$uquad,size=2, time=100)
-#)
-#ggplot(cen.test,aes(x=x.uquad)) +
-#    geom_area(stat="bin",binwidth=250) +
-#    scale_x_continuous(limits = c(0,5800))
+ggplot(central_lim, aes(x=取樣,fill=母體分配)) +
+    geom_histogram(binwidth=0.5) +
+        facet_grid(`抽樣數(n)`~母體分配, scales="free") +
+            xlab("母體隨機變數 & 取樣平均數") + ylab("相對次數")
+
+
 ###############################################################################
-# popu.m      :母體平均值
-# popu.sd     :母體標準差
-# popu.est.m  :取樣平均值
-# popu.est.sd :取樣標準差
+# popu.m        :母體平均值
+# popu.sd       :母體標準差
+# popu.est.m    :取樣平均值
+# popu.est.sd   :取樣標準差
+# up.interval   :+500元上限
+# down.interval :-500元下限
+
 popu.person_info<-tibble(
     member.ID = 1:8000,
     salary    = rnorm(8000, mean=52000, sd=6000)
@@ -343,11 +343,11 @@ sem.n2<-popu.sd/sqrt(length(n.2))
 up.interval<-popu.est.m + 500
 down.interval<-popu.est.m - 500
 
-#計算無限母體平均落在樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差未知)
 pnorm(up.interval, mean=popu.est.m, sd=sem.n2) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n2)
 
-#實際有限母體與樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差已知)
 pnorm(up.interval, mean=popu.m, sd=sem.n2) -
     pnorm(down.interval, mean=popu.m, sd=sem.n2)
 
@@ -381,11 +381,11 @@ sem.n10<-popu.sd/sqrt(length(n.10))
 up.interval<-popu.est.m + 500
 down.interval<-popu.est.m - 500
 
-#計算無限母體平均落在樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差未知)
 pnorm(up.interval, mean=popu.est.m, sd=sem.n10) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n10)
 
-#實際有限母體與樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差已知)
 pnorm(up.interval, mean=popu.m, sd=sem.n10) -
     pnorm(down.interval, mean=popu.m, sd=sem.n10)
 
@@ -419,11 +419,11 @@ sem.n30<-popu.sd/sqrt(length(n.30))
 up.interval<-popu.est.m + 500
 down.interval<-popu.est.m - 500
 
-#計算無限母體平均落在樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差未知)
 pnorm(up.interval, mean=popu.est.m, sd=sem.n30) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n30)
 
-#實際有限母體與樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差已知)
 pnorm(up.interval, mean=popu.m, sd=sem.n30) -
     pnorm(down.interval, mean=popu.m, sd=sem.n30)
 
@@ -457,11 +457,11 @@ sem.n100<-popu.sd/sqrt(length(n.100))
 up.interval<-popu.est.m + 500
 down.interval<-popu.est.m - 500
 
-#計算無限母體平均落在樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差未知)
 pnorm(up.interval, mean=popu.est.m, sd=sem.n100) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n100)
 
-#實際有限母體與樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差已知)
 pnorm(up.interval, mean=popu.m, sd=sem.n100) -
     pnorm(down.interval, mean=popu.m, sd=sem.n100)
 
@@ -495,11 +495,11 @@ sem.n500<-popu.sd/sqrt(length(n.500))
 up.interval<-popu.est.m + 500
 down.interval<-popu.est.m - 500
 
-#計算無限母體平均落在樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差未知)
 pnorm(up.interval, mean=popu.est.m, sd=sem.n500) -
     pnorm(down.interval, mean=popu.est.m, sd=sem.n500)
 
-#實際有限母體與樣本平均數+-$500的機率
+#樣本平均數落在+-$500的機率(母體平均數:標準差已知)
 pnorm(up.interval, mean=popu.m, sd=sem.n500) -
     pnorm(down.interval, mean=popu.m, sd=sem.n500)
 

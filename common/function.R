@@ -65,13 +65,13 @@ ruquad<-function(n,b=1)
     
     RN<-runif(n)
     temp<-(3*RN)/alpha-(beta-alpha)^3
-    output<-sign(temp)*abs(temp)^(1/3)+beta
+    output<-sign(temp)abs(temp)^(1/3)+beta
     output
 }
 
 ###############################################################################
-#exact sampling distribution
-dsample<-function(x, size=1, time=1, replace=FALSE)
+#sampling distribution
+dsample<-function(x, size=1, time=100, replace=FALSE)
 {
     output<-vector("double",length(time))
     for(i in 1:time){

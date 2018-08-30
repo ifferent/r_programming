@@ -336,168 +336,168 @@ popu.sd<-sd(popu.person_info$salary)
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #點估計
 n.2 <- sample(popu.person_info$salary, 2)
-popu.est.m<-mean(n.2)
-popu.est.sd<-sd(n.2)
+popu.est.m.2<-mean(n.2)
+popu.est.sd.2<-sd(n.2)
 #計算標準偏差(sem)
 sem.n2<-popu.sd/sqrt(length(n.2))
-up.interval<-popu.est.m + 500
-down.interval<-popu.est.m - 500
+up.interval.2<-popu.est.m.2 + 500
+down.interval.2<-popu.est.m.2 - 500
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差未知)
-pnorm(up.interval, mean=popu.est.m, sd=sem.n2) -
-    pnorm(down.interval, mean=popu.est.m, sd=sem.n2)
+pnorm(up.interval.2, mean=popu.est.m.2, sd=popu.est.sd.2) -
+    pnorm(down.interval.2, mean=popu.est.m.2, sd=popu.est.sd.2)
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差已知)
-pnorm(up.interval, mean=popu.m, sd=sem.n2) -
-    pnorm(down.interval, mean=popu.m, sd=sem.n2)
+pnorm(up.interval.2, mean=popu.est.m.2, sd=sem.n2) -
+    pnorm(down.interval.2, mean=popu.est.m.2, sd=sem.n2)
 
 
 #母體平均值與取樣平均值的差值
-abs(popu.m - popu.est.m)
-up.interval.est<-popu.est.m + 5500
-down.interval.est<-popu.est.m - 5500
+abs(popu.m - popu.est.m.2)
+up.interval.est<-popu.est.m.2 + 5500
+down.interval.est<-popu.est.m.2 - 5500
 pnorm(up.interval.est, mean=popu.m, sd=sem.n2) -
     pnorm(down.interval.est, mean=popu.m, sd=sem.n2)
 
 df.est<-tibble(
-    "取樣分佈(n=2)"   = (popu.est.m-3.5*sem.n2):(popu.est.m+3.5*sem.n2),
-    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=2)`)-1)),
-    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n2)
+    "取樣分佈(n=2)"   = (popu.est.m.2-3.5*sem.n2):(popu.est.m.2+3.5*sem.n2),
+    "-500<=x<=500"    = seq(down.interval.2,up.interval.2,(up.interval.2-down.interval.2)/(length(`取樣分佈(n=2)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m.2, sd=sem.n2)
 )
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=2)`), stat="function", fun=dnorm, 
-              args=list(mean=popu.est.m, sd=sem.n2)) +
+              args=list(mean=popu.est.m.2, sd=sem.n2)) +
     geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
-    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n2), 
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m.2, sd=sem.n2), 
              colour="#99004d", size=1)
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
 n.10 = sample(popu.person_info$salary, 10)
-popu.est.m<-mean(n.10)
-popu.est.sd<-sd(n.10)
+popu.est.m.10<-mean(n.10)
+popu.est.sd.10<-sd(n.10)
 #計算標準偏差(sem)
 sem.n10<-popu.sd/sqrt(length(n.10))
-up.interval<-popu.est.m + 500
-down.interval<-popu.est.m - 500
+up.interval.10<-popu.est.m.10 + 500
+down.interval.10<-popu.est.m.10 - 500
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差未知)
-pnorm(up.interval, mean=popu.est.m, sd=sem.n10) -
-    pnorm(down.interval, mean=popu.est.m, sd=sem.n10)
+pnorm(up.interval.10, mean=popu.est.m.10, sd=popu.est.sd.10) -
+    pnorm(down.interval.10, mean=popu.est.m.10, sd=popu.est.sd.10)
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差已知)
-pnorm(up.interval, mean=popu.m, sd=sem.n10) -
-    pnorm(down.interval, mean=popu.m, sd=sem.n10)
+pnorm(up.interval.10, mean=popu.m, sd=sem.n10) -
+    pnorm(down.interval.10, mean=popu.m, sd=sem.n10)
 
 
 #母體平均值與取樣平均值的差值
-abs(popu.m - popu.est.m)
-up.interval.est<-popu.est.m + 5500
-down.interval.est<-popu.est.m - 5500
+abs(popu.m - popu.est.m.10)
+up.interval.est<-popu.est.m.10 + 5500
+down.interval.est<-popu.est.m.10 - 5500
 pnorm(up.interval.est, mean=popu.m, sd=sem.n10) -
     pnorm(down.interval.est, mean=popu.m, sd=sem.n10)
 
 df.est<-tibble(
-    "取樣分佈(n=10)"   = (popu.est.m-3.5*sem.n10):(popu.est.m+3.5*sem.n10),
-    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=10)`)-1)),
+    "取樣分佈(n=10)"   = (popu.est.m.10-3.5*sem.n10):(popu.est.m.10+3.5*sem.n10),
+    "-500<=x<=500"    = seq(down.interval.10,up.interval.10,(up.interval.10-down.interval.10)/(length(`取樣分佈(n=10)`)-1)),
     "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n10)
 )
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=10)`), stat="function", fun=dnorm, 
-              args=list(mean=popu.est.m, sd=sem.n10)) +
+              args=list(mean=popu.est.m.10, sd=sem.n10)) +
     geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
-    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n10), 
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m.10, sd=sem.n10), 
              colour="#99004d", size=1)
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
 n.30 = sample(popu.person_info$salary, 30)
-popu.est.m<-mean(n.30)
-popu.est.sd<-sd(n.30)
+popu.est.m.30<-mean(n.30)
+popu.est.sd.30<-sd(n.30)
 #計算標準偏差(sem)
 sem.n30<-popu.sd/sqrt(length(n.30))
-up.interval<-popu.est.m + 500
-down.interval<-popu.est.m - 500
+up.interval.30<-popu.est.m.30 + 500
+down.interval.30<-popu.est.m.30 - 500
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差未知)
-pnorm(up.interval, mean=popu.est.m, sd=sem.n30) -
-    pnorm(down.interval, mean=popu.est.m, sd=sem.n30)
+pnorm(up.interval.30, mean=popu.est.m.30, sd=popu.est.sd.30) -
+    pnorm(down.interval.30, mean=popu.est.m.30, sd=popu.est.sd.30)
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差已知)
-pnorm(up.interval, mean=popu.m, sd=sem.n30) -
-    pnorm(down.interval, mean=popu.m, sd=sem.n30)
+pnorm(up.interval.30, mean=popu.m.30, sd=sem.n30) -
+    pnorm(down.interval.30, mean=popu.m.30, sd=sem.n30)
 
 
 #母體平均值與取樣平均值的差值
-abs(popu.m - popu.est.m)
-up.interval.est<-popu.est.m + 5500
-down.interval.est<-popu.est.m - 5500
+abs(popu.m - popu.est.m.30)
+up.interval.est<-popu.est.m.30 + 5500
+down.interval.est<-popu.est.m.30 - 5500
 pnorm(up.interval.est, mean=popu.m, sd=sem.n30) -
     pnorm(down.interval.est, mean=popu.m, sd=sem.n30)
 
 df.est<-tibble(
-    "取樣分佈(n=30)"   = (popu.est.m-3.5*sem.n30):(popu.est.m+3.5*sem.n30),
-    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=30)`)-1)),
-    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n30)
+    "取樣分佈(n=30)"   = (popu.est.m.30-3.5*sem.n30):(popu.est.m.30+3.5*sem.n30),
+    "-500<=x<=500"    = seq(down.interval.30,up.interval.30,(up.interval.30-down.interval.30)/(length(`取樣分佈(n=30)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m.30, sd=sem.n30)
 )
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=30)`), stat="function", fun=dnorm, 
-              args=list(mean=popu.est.m, sd=sem.n30)) +
+              args=list(mean=popu.est.m.30, sd=sem.n30)) +
     geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
-    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n30), 
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m.30, sd=sem.n30), 
              colour="#99004d", size=1)
              
              
 #*********!!!!!!!!*********!!!!!!!!*******
 n.100 = sample(popu.person_info$salary, 100)
-popu.est.m<-mean(n.100)
-popu.est.sd<-sd(n.100)
+popu.est.m.100<-mean(n.100)
+popu.est.sd.100<-sd(n.100)
 #計算標準偏差(sem)
 sem.n100<-popu.sd/sqrt(length(n.100))
-up.interval<-popu.est.m + 500
-down.interval<-popu.est.m - 500
+up.interval.100<-popu.est.m.100 + 500
+down.interval.100<-popu.est.m.100 - 500
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差未知)
-pnorm(up.interval, mean=popu.est.m, sd=sem.n100) -
-    pnorm(down.interval, mean=popu.est.m, sd=sem.n100)
+pnorm(up.interval.100, mean=popu.est.m.100, sd=popu.est.sd.100) -
+    pnorm(down.interval.100, mean=popu.est.m.100, sd=popu.est.sd.100)
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差已知)
-pnorm(up.interval, mean=popu.m, sd=sem.n100) -
-    pnorm(down.interval, mean=popu.m, sd=sem.n100)
+pnorm(up.interval.100, mean=popu.m, sd=sem.n100) -
+    pnorm(down.interval.100, mean=popu.m, sd=sem.n100)
 
 
 #母體平均值與取樣平均值的差值
-abs(popu.m - popu.est.m)
-up.interval.est<-popu.est.m + 5500
-down.interval.est<-popu.est.m - 5500
+abs(popu.m - popu.est.m.100)
+up.interval.est<-popu.est.m.100 + 5500
+down.interval.est<-popu.est.m.100 - 5500
 pnorm(up.interval.est, mean=popu.m, sd=sem.n100) -
     pnorm(down.interval.est, mean=popu.m, sd=sem.n100)
 
 df.est<-tibble(
-    "取樣分佈(n=100)"   = (popu.est.m-3.5*sem.n100):(popu.est.m+3.5*sem.n100),
-    "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=100)`)-1)),
-    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n100)
+    "取樣分佈(n=100)"   = (popu.est.m.100-3.5*sem.n100):(popu.est.m.100+3.5*sem.n100),
+    "-500<=x<=500"    = seq(down.interval.100,up.interval.100,(up.interval.100-down.interval.100)/(length(`取樣分佈(n=100)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m.100, sd=sem.n100)
 )
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=100)`), stat="function", fun=dnorm, 
-              args=list(mean=popu.est.m, sd=sem.n100)) +
+              args=list(mean=popu.est.m.100, sd=sem.n100)) +
     geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
-    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n100), 
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m.100, sd=sem.n100), 
              colour="#99004d", size=1)
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
 n.500 = sample(popu.person_info$salary, 500)
-popu.est.m<-mean(n.500)
-popu.est.sd<-sd(n.500)
+popu.est.m.500<-mean(n.500)
+popu.est.sd.500<-sd(n.500)
 #計算標準偏差(sem)
 sem.n500<-popu.sd/sqrt(length(n.500))
-up.interval<-popu.est.m + 500
-down.interval<-popu.est.m - 500
+up.interval<-popu.est.m.500 + 500
+down.interval<-popu.est.m.500 - 500
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差未知)
-pnorm(up.interval, mean=popu.est.m, sd=sem.n500) -
-    pnorm(down.interval, mean=popu.est.m, sd=sem.n500)
+pnorm(up.interval, mean=popu.est.m.500, sd=popu.est.sd.500) -
+    pnorm(down.interval, mean=popu.est.m.500, sd=popu.est.sd.500)
 
 #樣本平均數落在+-$500的機率(母體平均數:標準差已知)
 pnorm(up.interval, mean=popu.m, sd=sem.n500) -
@@ -505,22 +505,22 @@ pnorm(up.interval, mean=popu.m, sd=sem.n500) -
 
 
 #母體平均值與取樣平均值的差值
-abs(popu.m - popu.est.m)
-up.interval.est<-popu.est.m + 5500
-down.interval.est<-popu.est.m - 5500
+abs(popu.m - popu.est.m.500)
+up.interval.est<-popu.est.m.500 + 5500
+down.interval.est<-popu.est.m.500 - 5500
 pnorm(up.interval.est, mean=popu.m, sd=sem.n500) -
     pnorm(down.interval.est, mean=popu.m, sd=sem.n500)
 
 df.est<-tibble(
-    "取樣分佈(n=500)"   = (popu.est.m-3.5*sem.n500):(popu.est.m+3.5*sem.n500),
+    "取樣分佈(n=500)"   = (popu.est.m.500-3.5*sem.n500):(popu.est.m.500+3.5*sem.n500),
     "-500<=x<=500"    = seq(down.interval,up.interval,(up.interval-down.interval)/(length(`取樣分佈(n=500)`)-1)),
-    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m, sd=sem.n500)
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.est.m.500, sd=sem.n500)
 )
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=500)`), stat="function", fun=dnorm, 
-              args=list(mean=popu.est.m, sd=sem.n500)) +
+              args=list(mean=popu.est.m.500, sd=sem.n500)) +
     geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5,fill="#e67300") +
-    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m, sd=sem.n500), 
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.est.m.500, sd=sem.n500), 
              colour="#99004d", size=1)
 
 

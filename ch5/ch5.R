@@ -141,14 +141,23 @@ ppois(4, pois.lambda, lower.tail=F) # P[X > 4]
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #均勻分配例題
 #1
-(punif(48,min=45,max=60)-punif(47,min=40,max=60)) +
-    (punif(52,min=40,max=60)-punif(51,min=40,max=60)) +
-        (punif(58,min=40,max=60)-punif(57,min=40,max=60))
+#  P[44<=x<=45]
+(punif(45,min=40,max=60)-punif(44,min=40,max=60)) + 
+    #  P[47<=x<=48]
+    (punif(48,min=40,max=60)-punif(47,min=40,max=60)) +
+        #  P[51<=x<=52]
+        (punif(52,min=40,max=60)-punif(51,min=40,max=60)) +
+            #  P[57<=x<=58]
+            (punif(58,min=40,max=60)-punif(57,min=40,max=60))
 
 #2
-(punif(48,min=40,max=60)-punif(47,min=40,max=60)) +
-    (punif(52,min=40,max=60)-punif(51,min=40,max=60)) +
-    (punif(58,min=40,max=60)-punif(57,min=40,max=60))
+# p[43<=x<=44]
+#只有43分抵達放棄44分的捷運才有機會5分鐘內並有位置坐到48分的捷運
+(punif(44,min=40,max=60)-punif(43,min=40,max=60)) +
+# P[47<=x<=48]
+#只有47分抵達放棄48分的捷運才有機會5分鐘內並有位置坐到52分的捷運
+    (punif(48,min=45,max=60)-punif(47,min=45,max=60))
+
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
@@ -584,7 +593,8 @@ ggplot(df.est.unknow) +
     annotate("segment", x=inter.est.m, xend=inter.est.m, 
              y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sem.est),colour="#99004d", size=1)
 
-
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#假設檢定
 
 
 

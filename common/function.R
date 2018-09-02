@@ -65,7 +65,7 @@ ruquad<-function(n,b=1)
     
     RN<-runif(n)
     temp<-(3*RN)/alpha-(beta-alpha)^3
-    output<-sign(temp)abs(temp)^(1/3)+beta
+    output<-sign(temp)*abs(temp)^(1/3)+beta
     output
 }
 
@@ -79,9 +79,6 @@ dsample<-function(x, size=1, time=100, replace=FALSE)
     }
     output
 }
-
-
-x<-10+runif(20)*(20-10)
 
 
 

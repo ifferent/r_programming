@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-09-03                                                  ####
+#### 完成日期: 2018-09-05                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V2.35                                                           ####
+#### 版本：V2.5                                                            ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.建立資料框                                                       ####
@@ -38,9 +38,11 @@ library(ggplot2)
 ################################檔案載入與設定#################################
 ch5sample.exp1_path="ch5/sample_data/信用卡卡款.csv"
 ch5sample.exp2_path="ch5/sample_data/咖啡罐重量.csv"
+ch5sample.exp3_path="ch5/sample_data/訂單.csv"
 
 ch5sample.exp1<-read_csv(ch5sample.exp1_path,col_names=TRUE)
 ch5sample.exp2<-read_csv(ch5sample.exp2_path,col_names=TRUE)
+ch5sample.exp3<-read_csv(ch5sample.exp3_path,col_names=TRUE)
 
 ###############################################################################
 name<-c("Alice","Bob","Roddy","Eddie","William",

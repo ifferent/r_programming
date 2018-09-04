@@ -312,18 +312,24 @@ cen.lim.500<-tibble(
 
 central_lim<-tibble(
     "取樣"      = c(popu$uni,  cen.lim.2$x.uni,  cen.lim.5$x.uni,  cen.lim.30$x.uni,  cen.lim.500$x.uni,
-                    popu$exp,  cen.lim.2$x.exp,  cen.lim.5$x.exp,  cen.lim.30$x.exp,  cen.lim.500$x.exp,
-                    popu$uquad,cen.lim.2$x.uquad,cen.lim.5$x.uquad,cen.lim.30$x.uquad,cen.lim.500$x.uquad),
+                  popu$exp,  cen.lim.2$x.exp,  cen.lim.5$x.exp,  cen.lim.30$x.exp,  cen.lim.500$x.exp,
+                  popu$uquad,cen.lim.2$x.uquad,cen.lim.5$x.uquad,cen.lim.30$x.uquad,cen.lim.500$x.uquad),
     "母體分配"  = c(rep("uni",15000),rep("exp",15000),rep("uquad",15000)),
     "抽樣數(n)" = c(rep(0,3000), rep(2,3000), rep(5,3000), rep(30,3000), rep(500,3000),
-                    rep(0,3000), rep(2,3000), rep(5,3000), rep(30,3000), rep(500,3000),
-                    rep(0,3000), rep(2,3000), rep(5,3000), rep(30,3000), rep(500,3000))
+                 rep(0,3000), rep(2,3000), rep(5,3000), rep(30,3000), rep(500,3000),
+                 rep(0,3000), rep(2,3000), rep(5,3000), rep(30,3000), rep(500,3000))
 )
 
 ggplot(central_lim, aes(x=取樣,fill=母體分配)) +
-    geom_histogram(binwidth=0.5) +
-        facet_grid(`抽樣數(n)`~母體分配, scales="free") +
-            xlab("母體隨機變數 & 取樣平均數") + ylab("相對次數")
+    geom_histogram(binwidth=0.5, colour="grey30", size=0.01) +
+    facet_grid(`抽樣數(n)`~母體分配, scales="free") +
+    xlab("母體隨機變數 & 取樣平均數") + ylab("相對次數")
+
+ggplot(central_lim, aes(x=取樣,fill=母體分配)) +
+    geom_line(stat="density", size=1.1) +
+    geom_area(stat="density",alpha=0.9) +
+    facet_grid(`抽樣數(n)`~母體分配, scales="free") +
+    xlab("母體隨機變數 & 取樣平均數") + ylab("相對次數")
 
 
 ###############################################################################

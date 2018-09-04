@@ -1,9 +1,9 @@
 ###############################################################################
 ###############################################################################
 ####                                                                       ####
-#### 完成日期: 2018-08-28                                                  ####
+#### 完成日期: 2018-09-03                                                  ####
 #### 作者：Roddy Hung                                                      ####
-#### 版本：V2.3                                                            ####
+#### 版本：V2.35                                                           ####
 ####                                                                       ####
 #### 第4章範例程式:                                                        ####
 ####    1.建立資料框                                                       ####
@@ -33,11 +33,14 @@ source("common/function.R",encoding="utf-8") #將公用自訂函數載起來
 library(readr)
 library(dplyr)
 library(tibble)
+library(BSDA)
 library(ggplot2)
 ################################檔案載入與設定#################################
 ch5sample.exp1_path="ch5/sample_data/信用卡卡款.csv"
+ch5sample.exp2_path="ch5/sample_data/咖啡罐重量.csv"
 
 ch5sample.exp1<-read_csv(ch5sample.exp1_path,col_names=TRUE)
+ch5sample.exp2<-read_csv(ch5sample.exp2_path,col_names=TRUE)
 
 ###############################################################################
 name<-c("Alice","Bob","Roddy","Eddie","William",
@@ -383,21 +386,23 @@ pnorm(up.interval.est, mean=popu.m.2, sd=sd.est.2) -
 
 #查看與實際母體的差距(已知母體標準差)
 df.est<-tibble(
-    "取樣分佈(n=2)"   = (popu.m.2-3.5*sd.est.2):(popu.m.2+3.5*sd.est.2),
+    "取樣分佈(n=2)"   = seq((popu.m.2-3.5*sd.est.2),(popu.m.2+3.5*sd.est.2),100),
     "-500<=x<=500"    = seq(down.interval.2,up.interval.2,(up.interval.2-down.interval.2)/(length(`取樣分佈(n=2)`)-1)),
     "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.m.2, sd=sd.est.2)
 )
 
-place.y<-dnorm(popu.m.10, mean=popu.m.10, sd=sd.est.10)/2
+place.y<-dnorm(popu.m.2, mean=popu.m.2, sd=sd.est.2)/2
 
 ggplot(df.est) +
     geom_line(aes(x=`取樣分佈(n=2)`), stat="function", fun=dnorm, 
               args=list(mean=popu.m.2, sd=sd.est.2)) +
-        geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
-            annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.m.2, sd=sd.est.2), 
-                     colour="#99004d", size=1) +
-            annotate("segment", x=popu.m.2, xend=popu.m, y=place.y, yend=place.y, colour="#00b300", size=0.25, 
-                     arrow=arrow(ends="both",angle=90, length=unit(.3,"cm")))
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.m.2, sd=sd.est.2), 
+             colour="#99004d", size=1) +
+    annotate("segment", x=popu.m.2, xend=popu.m, y=place.y, yend=place.y, colour="#00b300", size=0.25, 
+             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm"))) +
+    annotate("text", x=ifelse(popu.m>=popu.m.2,popu.m*1.01,popu.m*0.09), 
+             y=dnorm(popu.m, mean=popu.m.2, sd=sd.est.2)*1.09, parse=T, label="mu", size=10, colour="#99004d")
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
@@ -440,7 +445,7 @@ pnorm(up.interval.est, mean=popu.m.10, sd=sd.est.10) -
 
 #查看與實際母體的差距(已知母體標準差)
 df.est<-tibble(
-    "取樣分佈(n=10)"   = (popu.m.10-3.5*sd.est.10):(popu.m.10+3.5*sd.est.10),
+    "取樣分佈(n=10)"   = seq((popu.m.10-3.5*sd.est.10),(popu.m.10+3.5*sd.est.10),100),
     "-500<=x<=500"    = seq(down.interval.10,up.interval.10,(up.interval.10-down.interval.10)/(length(`取樣分佈(n=10)`)-1)),
     "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.m.10, sd=sd.est.10)
 )
@@ -454,7 +459,9 @@ ggplot(df.est) +
     annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.m.10, sd=sd.est.10), 
              colour="#99004d", size=1) +
     annotate("segment", x=popu.m.10, xend=popu.m, y=place.y, yend=place.y, colour="#00b300", size=0.25, 
-             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm")))
+             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm"))) +
+    annotate("text", x=ifelse(popu.m>=popu.m.10,popu.m*1.01,popu.m*0.999), 
+             y=dnorm(popu.m, mean=popu.m.10, sd=sd.est.10)*1.05, parse=T, label="mu", size=10, colour="#99004d")
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
@@ -497,7 +504,7 @@ pnorm(up.interval.est, mean=popu.m.30, sd=sd.est.30) -
 
 #查看與實際母體的差距(已知母體標準差)
 df.est<-tibble(
-    "取樣分佈(n=30)"   = (popu.m.30-3.5*sd.est.30):(popu.m.30+3.5*sd.est.30),
+    "取樣分佈(n=30)"   = seq((popu.m.30-3.5*sd.est.30),(popu.m.30+3.5*sd.est.30),50),
     "-500<=x<=500"    = seq(down.interval.30,up.interval.30,(up.interval.30-down.interval.30)/(length(`取樣分佈(n=30)`)-1)),
     "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.m.30, sd=sd.est.30)
 )
@@ -511,7 +518,9 @@ ggplot(df.est) +
     annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.m.30, sd=sd.est.30), 
              colour="#99004d", size=1) +
     annotate("segment", x=popu.m.30, xend=popu.m, y=place.y, yend=place.y, colour="#00b300", size=0.25, 
-             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm")))
+             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm"))) +
+    annotate("text", x=ifelse(popu.m>=popu.m.30,popu.m*1.004,popu.m*0.998), 
+             y=dnorm(popu.m, mean=popu.m.30, sd=sd.est.30)*1.03, parse=T, label="mu", size=10, colour="#99004d")
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
@@ -554,8 +563,9 @@ pnorm(up.interval.est, mean=popu.m.100, sd=sd.est.100) -
 
 #查看與實際母體的差距(已知母體標準差)
 df.est<-tibble(
-    "取樣分佈(n=100)"   = (popu.m.100-3.5*sd.est.100):(popu.m.100+3.5*sd.est.100),
-    "-500<=x<=500"    = seq(down.interval.100,up.interval.100,(up.interval.100-down.interval.100)/(length(`取樣分佈(n=100)`)-1)),
+    "取樣分佈(n=100)"   = seq((popu.m.100-3.5*sd.est.100),(popu.m.100+3.5*sd.est.100),10),
+    "-500<=x<=500"    = seq(down.interval.100,up.interval.100,
+                            (up.interval.100-down.interval.100)/(length(`取樣分佈(n=100)`)-1)),
     "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.m.100, sd=sd.est.100)
 )
 
@@ -568,7 +578,9 @@ ggplot(df.est) +
     annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.m.100, sd=sd.est.100), 
              colour="#99004d", size=1) +
     annotate("segment", x=popu.m.100, xend=popu.m, y=place.y, yend=place.y, colour="#00b300", size=0.25, 
-             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm")))
+             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm"))) +
+    annotate("text", x=ifelse(popu.m>=popu.m.100,popu.m*1.001,popu.m*0.999), 
+             y=dnorm(popu.m, mean=popu.m.100, sd=sd.est.100)+2e-5, parse=T, label="mu", size=10, colour="#99004d")
 
 
 #*********!!!!!!!!*********!!!!!!!!*******
@@ -591,6 +603,43 @@ down.interval.500<-popu.m.500 - 500
 #樣本平均數落在+-$500的機率
 pnorm(up.interval.500, mean=popu.m.500, sd=sd.est.500.unknow) -
     pnorm(down.interval.500, mean=popu.m.500, sd=sd.est.500.unknow)
+
+########################
+#母體平均數:標準差已知:
+#計算取樣分配的標準差
+#母體標準差已知,所以直接使用母體標準差
+sd.est.500<-popu.sd/sqrt(length(n.500))
+#樣本平均數落在+-$500的機率
+pnorm(up.interval.500, mean=popu.m.500, sd=sd.est.500) -
+    pnorm(down.interval.500, mean=popu.m.500, sd=sd.est.500)
+
+
+#母體平均值與取樣平均值的差值
+abs(popu.m - popu.m.500)
+up.interval.est<-popu.m.500 + 3000
+down.interval.est<-popu.m.500 - 3000
+pnorm(up.interval.est, mean=popu.m.500, sd=sd.est.500) -
+    pnorm(down.interval.est, mean=popu.m.500, sd=sd.est.500)
+
+#查看與實際母體的差距(已知母體標準差)
+df.est<-tibble(
+    "取樣分佈(n=500)"   = seq((popu.m.500-3.5*sd.est.500),(popu.m.500+3.5*sd.est.500),10),
+    "-500<=x<=500"    = seq(down.interval.500,up.interval.500,(up.interval.500-down.interval.500)/(length(`取樣分佈(n=500)`)-1)),
+    "p[-500<=x<=500]" = dnorm(`-500<=x<=500`, mean=popu.m.500, sd=sd.est.500)
+)
+
+place.y<-dnorm(popu.m.500, mean=popu.m.500, sd=sd.est.500)/2
+
+ggplot(df.est) +
+    geom_line(aes(x=`取樣分佈(n=500)`), stat="function", fun=dnorm, 
+              args=list(mean=popu.m.500, sd=sd.est.500)) +
+    geom_area(aes(x=`-500<=x<=500`, y=`p[-500<=x<=500]`), stat="identity", alpha=0.5, fill="#e67300") +
+    annotate("segment", x=popu.m, xend=popu.m, y=0, yend=dnorm(popu.m, mean=popu.m.500, sd=sd.est.500), 
+             colour="#99004d", size=1) +
+    annotate("segment", x=popu.m.500, xend=popu.m, y=place.y, yend=place.y, colour="#00b300", size=0.25, 
+             arrow=arrow(ends="both",angle=90, length=unit(.3,"cm"))) +
+    annotate("text", x=ifelse(popu.m>=popu.m.500,popu.m*1.001,popu.m*0.999),
+             y=dnorm(popu.m, mean=popu.m.500, sd=sd.est.500)+0.5e-4, parse=T, label="mu", size=10, colour="#99004d")
 
 ########################
 #母體平均數:標準差已知:
@@ -639,24 +688,24 @@ df.sample<-length(ch5sample.exp1$"卡款")-1
 alpha.half<-(1-0.95)/2
 t_statistical<-qt(alpha.half,df=df.sample)
 #利用弱大數法則計算樣本標準差
-sem.est<-inter.est.sd/sqrt(length(ch5sample.exp1$"卡款"))
+sd.est.unknow<-inter.est.sd/sqrt(length(ch5sample.exp1$"卡款"))
 #計算邊際誤差
-margin_err<-abs(t_statistical)*sem.est
+margin_err<-abs(t_statistical)*sd.est.unknow
 
 up.interval.unknow<-inter.est.m + margin_err
 down.interval.unknow<-inter.est.m - margin_err
 df.est.unknow<-tibble(
-    "取樣分佈"          = (inter.est.m-3.5*sem.est):(inter.est.m+3.5*sem.est),
+    "取樣分佈"          = (inter.est.m-3.5*sd.est.unknow):(inter.est.m+3.5*sd.est.unknow),
     "x_interval"        = seq(down.interval.unknow,up.interval.unknow,(up.interval.unknow-down.interval.unknow)/(length(取樣分佈)-1)),
-    "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sem.est)   
+    "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sd.est.unknow)   
 )
 
 ggplot(df.est.unknow) +
     geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
-              args=list(mean=inter.est.m, sd=sem.est)) +
+              args=list(mean=inter.est.m, sd=sd.est.unknow)) +
     geom_area(aes(x=x_interval, y=`p[x+-margin_err]`), stat="identity", alpha=0.5,fill="#e67300") +
     annotate("segment", x=inter.est.m, xend=inter.est.m, 
-             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sem.est),colour="#99004d", size=1)
+             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sd.est.unknow),colour="#99004d", size=1)
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
@@ -669,35 +718,62 @@ inter.est.sd<-4007
 alpha.half<-(1-0.95)/2
 z<-qnorm(alpha.half)
 #利用弱大數法則計算樣本標準差
-sem.est<-inter.est.sd/sqrt(length(ch5sample.exp1$"卡款"))
+sd.est<-inter.est.sd/sqrt(length(ch5sample.exp1$"卡款"))
 #計算邊際誤差
-margin_err<-abs(z)*sem.est
+margin_err<-abs(z)*sd.est
 
 up.interval.know<-inter.est.m + margin_err
 down.interval.know<-inter.est.m - margin_err
 df.est.unknow<-tibble(
-    "取樣分佈"          = (inter.est.m-3.5*sem.est):(inter.est.m+3.5*sem.est),
+    "取樣分佈"          = (inter.est.m-3.5*sd.est):(inter.est.m+3.5*sd.est),
     "x_interval"        = seq(down.interval.know,up.interval.know,(up.interval.know-down.interval.know)/(length(取樣分佈)-1)),
-    "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sem.est)   
+    "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sd.est)   
 )
 
 ggplot(df.est.unknow) +
     geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
-              args=list(mean=inter.est.m, sd=sem.est)) +
+              args=list(mean=inter.est.m, sd=sd.est)) +
     geom_area(aes(x=x_interval, y=`p[x+-margin_err]`), stat="identity", alpha=0.5,fill="#e67300") +
     annotate("segment", x=inter.est.m, xend=inter.est.m, 
-             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sem.est),colour="#99004d", size=1)
+             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sd.est),colour="#99004d", size=1)
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #假設檢定
 
+popu.m<-3
+popu.sd<-0.18
+
+coffie_can.test<-z.test(ch5sample.exp2$`重量(磅)`, mu=popu.m, sigma.x=popu.sd, alternative="greater",
+                        conf.level=0.99)
+coffie_can.test
+1-coffie_can.test$p.value
+
+sample.m<-mean(ch5sample.exp2$`重量(磅)`)
+sd.est<-popu.sd/sqrt(length(ch5sample.exp2$`重量(磅)`))
+up.interval.sample<-sample.m+3.5*sd.est
+down.interval.sample<-sample.m-3.5*sd.est
+up.interval.null<-popu.m+3.5*sd.est
+down.interval.null<-popu.m-3.5*sd.est
+coffie_can.test.null<-coffie_can.test$conf.int[1]+(popu.m-sample.m)
 
 
+hypo_test.exp1<-tibble(
+    "取樣分佈"          = seq(down.interval.sample, up.interval.sample, 0.01),
+    "虛無假設"          = seq(down.interval.null, up.interval.null, 0.01),
+    "左尾檢定"          = seq(down.interval.null,coffie_can.test.null,
+                             (coffie_can.test.null-down.interval.null)/(length(虛無假設)-1)),
+    "p值"               = dnorm(左尾檢定, mean=popu.m, sd=sd.est)
+)
 
-
-
-
-
+ggplot(hypo_test.exp1) +
+    geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
+              args=list(mean=sample.m, sd=sd.est)) +
+    geom_line(aes(x=虛無假設), stat="function", fun=dnorm, 
+              args=list(mean=popu.m, sd=sd.est),colour="#b300b3",alpha=0.5) +
+    geom_area(aes(x=左尾檢定, y=p值), stat="identity", alpha=0.5,fill="#e67300") +
+        annotate("segment", x=sample.m, xend=sample.m, y=0, yend=dnorm(sample.m, mean=sample.m, sd=sd.est),
+                 colour="#99004d", size=1)
+    
 
 
 

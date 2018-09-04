@@ -747,14 +747,26 @@ ggplot(df.est.unknow) +
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #假設檢定
+#母體標準差已知
+#左尾檢定
 
 popu.m<-3
 popu.sd<-0.18
 
-coffie_can.test<-z.test(ch5sample.exp2$`重量(磅)`, mu=popu.m, sigma.x=popu.sd, alternative="greater",
-                        conf.level=0.99)
+coffie_can.test<-z.test(ch5sample.exp2$`重量(磅)`, mu=popu.m, sigma.x=popu.sd, 
+                        alternative="greater", conf.level=0.99)
+
+cri.val<-tibble(
+    x=rep(2.93021,36)
+)
+coffie_can.test2<-z.test(cri.val$x, mu=popu.m, sigma.x=popu.sd, 
+                         alternative="greater", conf.level=0.99)
+
 coffie_can.test
+coffie_can.test2
 1-coffie_can.test$p.value
+
+1-coffie_can.test2$p.value
 
 sample.m<-mean(ch5sample.exp2$`重量(磅)`)
 sd.est<-popu.sd/sqrt(length(ch5sample.exp2$`重量(磅)`))
@@ -769,7 +781,7 @@ hypo_test.exp1<-tibble(
     "取樣分佈"          = seq(down.interval.sample, up.interval.sample, 0.01),
     "虛無假設"          = seq(down.interval.null, up.interval.null, 0.01),
     "左尾檢定"          = seq(down.interval.null,coffie_can.test.null,
-                             (coffie_can.test.null-down.interval.null)/(length(虛無假設)-1)),
+                          (coffie_can.test.null-down.interval.null)/(length(虛無假設)-1)),
     "p值"               = dnorm(左尾檢定, mean=popu.m, sd=sd.est)
 )
 
@@ -777,10 +789,62 @@ ggplot(hypo_test.exp1) +
     geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
               args=list(mean=sample.m, sd=sd.est)) +
     geom_line(aes(x=虛無假設), stat="function", fun=dnorm, 
-              args=list(mean=popu.m, sd=sd.est),colour="#b300b3",alpha=0.5) +
+              args=list(mean=popu.m, sd=sd.est), colour="#e60000", alpha=0.5, size=1.2, linetype=2) +
     geom_area(aes(x=左尾檢定, y=p值), stat="identity", alpha=0.5,fill="#e67300") +
-        annotate("segment", x=sample.m, xend=sample.m, y=0, yend=dnorm(sample.m, mean=sample.m, sd=sd.est),
-                 colour="#99004d", size=1)
+    annotate("segment", x=sample.m, xend=sample.m, y=0, yend=dnorm(sample.m, mean=sample.m, sd=sd.est),
+             colour="#0073e6", size=1) +
+    annotate("text", x=sample.m, y=dnorm(sample.m, mean=sample.m, sd=sd.est)*1.04, parse=T, size=6,
+             label="bar(x)") +
+    annotate("text", x=popu.m, y=dnorm(popu.m, mean=popu.m, sd=sd.est)*1.04, parse=T, size=6,
+             label="'H'*scriptscriptstyle(0)*' : '*mu")
+
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+#假設檢定
+#母體標準差未知
+#雙尾檢定
+
+est.m<-40
+sample.m<-mean(ch5sample.exp3$`訂購量`)
+sample.sd<-sd(ch5sample.exp3$`訂購量`)
+
+order.test<-t.test(ch5sample.exp3$`訂購量`, mu=est.m, 
+                   alternative="two.sided",conf.level=0.95)
+order.test
+
+sd.est<-sample.sd/sqrt(length(ch5sample.exp3$`訂購量`))
+up.interval.sample<-sample.m+3.5*sd.est
+down.interval.sample<-sample.m-3.5*sd.est
+up.interval.null<-est.m+3.5*sd.est
+down.interval.null<-est.m-3.5*sd.est
+
+order.test.left.null<-order.test$conf.int[1]+(est.m-sample.m)
+order.test.right.null<-order.test$conf.int[2]+(est.m-sample.m)
+
+hypo_test.exp2<-tibble(
+    "取樣分佈"          = seq(down.interval.sample, up.interval.sample, 0.01),
+    "虛無假設"          = seq(down.interval.null, up.interval.null, 0.01),
+    "左尾檢定"          = seq(down.interval.null,order.test.left.null,
+                          (order.test.left.null-down.interval.null)/(length(虛無假設)-1)),
+    "右尾檢定"          = seq(order.test.right.null,up.interval.null,
+                          (up.interval.null-order.test.right.null)/(length(虛無假設)-1)),
+    "左p值"               = dnorm(左尾檢定, mean=est.m, sd=sd.est),
+    "右p值"               = dnorm(右尾檢定, mean=est.m, sd=sd.est)
+)
+
+ggplot(hypo_test.exp2) +
+    geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
+              args=list(mean=sample.m, sd=sd.est)) +
+    geom_line(aes(x=虛無假設), stat="function", fun=dnorm, 
+              args=list(mean=est.m, sd=sd.est), colour="#e60000", alpha=0.5, size=1.2, linetype=2) +
+    geom_area(aes(x=左尾檢定, y=左p值), stat="identity", alpha=0.5,fill="#e67300") +
+    geom_area(aes(x=右尾檢定, y=右p值), stat="identity", alpha=0.5,fill="#e67300") +
+    annotate("segment", x=sample.m, xend=sample.m, y=0, yend=dnorm(sample.m, mean=sample.m, sd=sd.est),
+             colour="#0073e6", size=1) +
+    annotate("text", x=sample.m, y=dnorm(sample.m, mean=sample.m, sd=sd.est)*1.04, parse=T, size=6,
+             label="bar(x)") +
+    annotate("text", x=est.m, y=dnorm(est.m, mean=est.m, sd=sd.est)*1.04, parse=T, size=6,
+             label="'H'*scriptscriptstyle(0)*' : '*mu")
     
 
 

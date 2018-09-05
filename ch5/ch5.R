@@ -703,17 +703,29 @@ margin_err<-abs(t_statistical)*sd.est.unknow
 up.interval.unknow<-inter.est.m + margin_err
 down.interval.unknow<-inter.est.m - margin_err
 df.est.unknow<-tibble(
-    "取樣分佈"          = (inter.est.m-3.5*sd.est.unknow):(inter.est.m+3.5*sd.est.unknow),
-    "x_interval"        = seq(down.interval.unknow,up.interval.unknow,(up.interval.unknow-down.interval.unknow)/(length(取樣分佈)-1)),
+    "母體分佈"          = seq((inter.est.m-3.5*sd.est.unknow),(inter.est.m+3.5*sd.est.unknow),10),
+    "x_interval"        = seq(down.interval.unknow,up.interval.unknow,(up.interval.unknow-down.interval.unknow)/(length(母體分佈)-1)),
     "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sd.est.unknow)   
 )
 
+place.x1<-down.interval.unknow + (inter.est.m - down.interval.unknow)*0.7
+place.x2<-up.interval.unknow - (up.interval.unknow - inter.est.m)*0.7
+place.y<-dnorm(inter.est.m, mean=inter.est.m, sd=sd.est.unknow)/2
+
 ggplot(df.est.unknow) +
-    geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
+    geom_line(aes(x=母體分佈), stat="function", fun=dnorm, 
               args=list(mean=inter.est.m, sd=sd.est.unknow)) +
     geom_area(aes(x=x_interval, y=`p[x+-margin_err]`), stat="identity", alpha=0.5,fill="#e67300") +
     annotate("segment", x=inter.est.m, xend=inter.est.m, 
-             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sd.est.unknow),colour="#99004d", size=1)
+             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sd.est.unknow),
+             colour="#99004d", size=1, alpha=0.5) +
+    annotate("segment", x=down.interval.unknow, xend=place.x1,y=place.y, yend=place.y, 
+             colour="#00b300", size=0.25, 
+             arrow=arrow(ends="first", angle=90, length=unit(.3,"cm"))) +
+    annotate("segment", x=place.x2, xend=up.interval.unknow, y=place.y, yend=place.y, 
+             colour="#00b300", size=0.25, 
+             arrow=arrow(ends="last", angle=90, length=unit(.3,"cm"))) +
+    annotate("text", x=inter.est.m, y=place.y, colour="#00b300", size=7, label=" 95%")
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
@@ -738,12 +750,24 @@ df.est.unknow<-tibble(
     "p[x+-margin_err]"  = dnorm(x_interval, mean=inter.est.m, sd=sd.est)   
 )
 
+place.x1<-down.interval.unknow + (inter.est.m - down.interval.unknow)*0.7
+place.x2<-up.interval.unknow - (up.interval.unknow - inter.est.m)*0.7
+place.y<-dnorm(inter.est.m, mean=inter.est.m, sd=sd.est.unknow)/2
+
 ggplot(df.est.unknow) +
     geom_line(aes(x=取樣分佈), stat="function", fun=dnorm, 
               args=list(mean=inter.est.m, sd=sd.est)) +
     geom_area(aes(x=x_interval, y=`p[x+-margin_err]`), stat="identity", alpha=0.5,fill="#e67300") +
-    annotate("segment", x=inter.est.m, xend=inter.est.m, 
-             y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sd.est),colour="#99004d", size=1)
+        annotate("segment", x=inter.est.m, xend=inter.est.m, 
+                 y=0, yend=dnorm(inter.est.m, mean=inter.est.m, sd=sd.est),colour="#99004d", size=1) +
+        annotate("segment", x=down.interval.unknow, xend=place.x1,y=place.y, yend=place.y, 
+                 colour="#00b300", size=0.25, 
+                 arrow=arrow(ends="first", angle=90, length=unit(.3,"cm"))) +
+        annotate("segment", x=place.x2, xend=up.interval.unknow, y=place.y, yend=place.y, 
+                 colour="#00b300", size=0.25, 
+                 arrow=arrow(ends="last", angle=90, length=unit(.3,"cm"))) +
+        annotate("text", x=inter.est.m, y=place.y, colour="#00b300", size=7, label=" 95%")
+
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 #假設檢定

@@ -39,10 +39,13 @@ library(ggplot2)
 ch5sample.exp1_path="ch5/sample_data/信用卡卡款.csv"
 ch5sample.exp2_path="ch5/sample_data/咖啡罐重量.csv"
 ch5sample.exp3_path="ch5/sample_data/訂單.csv"
+ch5sample.exp4_path="ch5/sample_data/軟體效率評估.csv"
+ch5sample.exp4_1_path="ch5/sample_data/軟體效率評估2.csv"
 
 ch5sample.exp1<-read_csv(ch5sample.exp1_path,col_names=TRUE)
 ch5sample.exp2<-read_csv(ch5sample.exp2_path,col_names=TRUE)
 ch5sample.exp3<-read_csv(ch5sample.exp3_path,col_names=TRUE)
+ch5sample.exp4<-read_csv(ch5sample.exp4_path,col_names=TRUE)
 
 ###############################################################################
 name<-c("Alice","Bob","Roddy","Eddie","William",
@@ -860,15 +863,102 @@ ggplot(hypo_test.exp2) +
              label="bar(x)") +
     annotate("text", x=est.m, y=dnorm(est.m, mean=est.m, sd=sd.est)*1.04, parse=T, size=6,
              label="'H'*scriptscriptstyle(0)*' : '*mu")
-    
+
+###############################################################################
+#兩母體的假設檢定與估計
+#未知母體標準差
+################
+#  k<-tibble(
+#     "新版軟體" = round(rnorm(18,mean=389,sd=32),0),
+#     "目前軟體" = round(rnorm(18,mean=402,sd=10),0)
+#)
+#
+
+soft.test.unknow<-t.test(ch5sample.exp4$目前軟體,ch5sample.exp4$新版軟體,
+                         alternative="less")
+soft.test.unknow
+1-soft.test.unknow$p.value
+
+sigma1<-sd(ch5sample.exp4$"目前軟體")
+sigma2<-sd(ch5sample.exp4$"新版軟體")
+two_popu.m<-0
+two_sample.m<-soft.test.unknow$estimate[1]-soft.test.unknow$estimate[2]
+two_sample.m/qt(0.025,df=19.3,lower.tail=F)
+est.sd<-sqrt((sigma1^2)/length(ch5sample.exp4$目前軟體)+(sigma2^2)/length(ch5sample.exp4$新版軟體))
+
+up.boundary.sample<-two_sample.m+est.sd*3.5
+down.boundary.sample<-two_sample.m-est.sd*3.5
+
+up.boundary.null<-two_popu.m+est.sd*3.5
+down.boundary.null<-two_popu.m-est.sd*3.5
+
+soft.test.right.null<-soft.test.unknow$conf.int[2]-abs(two_popu.m-two_sample.m)
+
+soft_test.unknow<-tibble(
+    "兩母體差分佈" = seq(down.boundary.sample, up.boundary.sample, 0.01),
+    "虛無假設"     = seq(down.boundary.null,up.boundary.null,0.01),
+    "右尾檢定"     = seq(soft.test.right.null, up.boundary.null,
+                         (up.boundary.null-soft.test.right.null)/(length(虛無假設)-1)),
+    "右p值"        = dnorm(右尾檢定, mean=two_popu.m, sd=est.sd)
+)
+
+ggplot(soft_test.unknow) +
+    geom_line(aes(x=兩母體差分佈), stat="function", fun=dnorm, 
+              args=list(mean=two_sample.m, sd=est.sd)) +
+    geom_line(aes(x=虛無假設), stat="function", fun=dnorm, 
+              args=list(mean=two_popu.m, sd=est.sd), colour="#e60000", alpha=0.5, size=1.2, linetype=2) +
+    geom_area(aes(x=右尾檢定, y=右p值), stat="identity", alpha=0.5,fill="#e67300") +
+        annotate("segment", x=two_sample.m, xend=two_sample.m, y=0, yend=dnorm(two_sample.m, mean=two_sample.m, sd=est.sd),
+                 colour="#0073e6", size=1) +
+        annotate("text", x=two_sample.m, y=dnorm(two_sample.m, mean=two_sample.m, sd=est.sd)*1.04, parse=T, size=6,
+                 label="bar(x)*' = '*mu*scriptscriptstyle(1)*' - '*mu*scriptscriptstyle(2)") +
+        annotate("text", x=two_popu.m, y=dnorm(two_popu.m, mean=two_popu.m, sd=est.sd)*1.04, parse=T, size=6,
+                 label="'H'*scriptscriptstyle(0)*' : '*mu*scriptscriptstyle(1)*' - '*mu*scriptscriptstyle(2)<=0")
 
 
+###############################################################################
+#兩母體的假設檢定與估計
+#已知母體標準差
+soft.test<-z.test(ch5sample.exp4$目前軟體,ch5sample.exp4$新版軟體,sigma.x=10,sigma.y=10,
+                  alternative="less")
+soft.test
+1-soft.test$p.value
 
+sigma1<-10
+sigma2<-10
+two_popu.m<-0
+two_sample.m<-soft.test$estimate[1]-soft.test$estimate[2]
 
+est.sd<-sqrt((sigma1^2)/length(ch5sample.exp4_1$目前軟體)+(sigma2^2)/length(ch5sample.exp4_1$新版軟體))
 
+up.boundary.sample<-two_sample.m+est.sd*3.5
+down.boundary.sample<-two_sample.m-est.sd*3.5
 
+up.boundary.null<-two_popu.m+est.sd*3.5
+down.boundary.null<-two_popu.m-est.sd*3.5
 
+soft.test.right.null<-soft.test$conf.int[2]-abs(two_popu.m-two_sample.m)
 
+soft_test<-tibble(
+    "兩母體差分佈" = seq(down.boundary.sample, up.boundary.sample, 0.01),
+    "虛無假設"     = seq(down.boundary.null,up.boundary.null,0.01),
+    "右尾檢定"     = seq(soft.test.right.null, up.boundary.null,
+                     (up.boundary.null-soft.test.right.null)/(length(虛無假設)-1)),
+    "右p值"        = dnorm(右尾檢定, mean=two_popu.m, sd=est.sd)
+)
+
+ggplot(soft_test) +
+    geom_line(aes(x=兩母體差分佈), stat="function", fun=dnorm, 
+              args=list(mean=two_sample.m, sd=est.sd)) +
+    geom_line(aes(x=虛無假設), stat="function", fun=dnorm, 
+              args=list(mean=two_popu.m, sd=est.sd), colour="#e60000", alpha=0.5, size=1.2, linetype=2) +
+    geom_area(aes(x=右尾檢定, y=右p值), stat="identity", alpha=0.5,fill="#e67300") +
+    annotate("segment", x=two_sample.m, xend=two_sample.m, y=0, yend=dnorm(two_sample.m, mean=two_sample.m, sd=est.sd),
+             colour="#0073e6", size=1) +
+    annotate("text", x=two_sample.m, y=dnorm(two_sample.m, mean=two_sample.m, sd=est.sd)*1.04, parse=T, size=6,
+             label="bar(x)*' = '*mu*scriptscriptstyle(1)*' - '*mu*scriptscriptstyle(2)") +
+    annotate("text", x=two_popu.m, y=dnorm(two_popu.m, mean=two_popu.m, sd=est.sd)*1.04, parse=T, size=6,
+             label="'H'*scriptscriptstyle(0)*' : '*mu*scriptscriptstyle(1)*' - '*mu*scriptscriptstyle(2)<=0")
 
 
 

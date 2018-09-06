@@ -780,32 +780,23 @@ popu.sd<-0.18
 coffie_can.test<-z.test(ch5sample.exp2$`重量(磅)`, mu=popu.m, sigma.x=popu.sd, 
                         alternative="greater", conf.level=0.99)
 
-cri.val<-tibble(
-    x=rep(2.93021,36)
-)
-coffie_can.test2<-z.test(cri.val$x, mu=popu.m, sigma.x=popu.sd, 
-                         alternative="greater", conf.level=0.99)
-
 coffie_can.test
-coffie_can.test2
 1-coffie_can.test$p.value
-
-1-coffie_can.test2$p.value
 
 sample.m<-mean(ch5sample.exp2$`重量(磅)`)
 sd.est<-popu.sd/sqrt(length(ch5sample.exp2$`重量(磅)`))
-up.interval.sample<-sample.m+3.5*sd.est
-down.interval.sample<-sample.m-3.5*sd.est
-up.interval.null<-popu.m+3.5*sd.est
-down.interval.null<-popu.m-3.5*sd.est
+up.boundary.sample<-sample.m+3.5*sd.est
+down.boundary.sample<-sample.m-3.5*sd.est
+up.boundary.null<-popu.m+3.5*sd.est
+down.boundary.null<-popu.m-3.5*sd.est
 coffie_can.test.null<-coffie_can.test$conf.int[1]+(popu.m-sample.m)
 
 
 hypo_test.exp1<-tibble(
-    "取樣分佈"          = seq(down.interval.sample, up.interval.sample, 0.01),
-    "虛無假設"          = seq(down.interval.null, up.interval.null, 0.01),
-    "左尾檢定"          = seq(down.interval.null,coffie_can.test.null,
-                          (coffie_can.test.null-down.interval.null)/(length(虛無假設)-1)),
+    "取樣分佈"          = seq(down.boundary.sample, up.boundary.sample, 0.01),
+    "虛無假設"          = seq(down.boundary.null, up.boundary.null, 0.01),
+    "左尾檢定"          = seq(down.boundary.null,coffie_can.test.null,
+                          (coffie_can.test.null-down.boundary.null)/(length(虛無假設)-1)),
     "p值"               = dnorm(左尾檢定, mean=popu.m, sd=sd.est)
 )
 
@@ -837,21 +828,21 @@ order.test<-t.test(ch5sample.exp3$`訂購量`, mu=est.m,
 order.test
 
 sd.est<-sample.sd/sqrt(length(ch5sample.exp3$`訂購量`))
-up.interval.sample<-sample.m+3.5*sd.est
-down.interval.sample<-sample.m-3.5*sd.est
-up.interval.null<-est.m+3.5*sd.est
-down.interval.null<-est.m-3.5*sd.est
+up.boundary.sample<-sample.m+3.5*sd.est
+down.boundary.sample<-sample.m-3.5*sd.est
+up.boundary.null<-est.m+3.5*sd.est
+down.boundary.null<-est.m-3.5*sd.est
 
 order.test.left.null<-order.test$conf.int[1]+(est.m-sample.m)
 order.test.right.null<-order.test$conf.int[2]+(est.m-sample.m)
 
 hypo_test.exp2<-tibble(
-    "取樣分佈"          = seq(down.interval.sample, up.interval.sample, 0.01),
-    "虛無假設"          = seq(down.interval.null, up.interval.null, 0.01),
-    "左尾檢定"          = seq(down.interval.null,order.test.left.null,
-                          (order.test.left.null-down.interval.null)/(length(虛無假設)-1)),
-    "右尾檢定"          = seq(order.test.right.null,up.interval.null,
-                          (up.interval.null-order.test.right.null)/(length(虛無假設)-1)),
+    "取樣分佈"          = seq(down.boundary.sample, up.boundary.sample, 0.01),
+    "虛無假設"          = seq(down.boundary.null, up.boundary.null, 0.01),
+    "左尾檢定"          = seq(down.boundary.null,order.test.left.null,
+                          (order.test.left.null-down.boundary.null)/(length(虛無假設)-1)),
+    "右尾檢定"          = seq(order.test.right.null,up.boundary.null,
+                          (up.boundary.null-order.test.right.null)/(length(虛無假設)-1)),
     "左p值"               = dnorm(左尾檢定, mean=est.m, sd=sd.est),
     "右p值"               = dnorm(右尾檢定, mean=est.m, sd=sd.est)
 )

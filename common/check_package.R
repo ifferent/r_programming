@@ -34,3 +34,7 @@ if(!require(purrr))
 {
   install.packages("purrr")
 }
+if(!require(BSDA))
+{
+    install.packages("BSDA")
+}

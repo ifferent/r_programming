@@ -40,12 +40,13 @@ ch5sample.exp1_path="ch5/sample_data/信用卡卡款.csv"
 ch5sample.exp2_path="ch5/sample_data/咖啡罐重量.csv"
 ch5sample.exp3_path="ch5/sample_data/訂單.csv"
 ch5sample.exp4_path="ch5/sample_data/軟體效率評估.csv"
-ch5sample.exp4_1_path="ch5/sample_data/軟體效率評估2.csv"
+ch5sample.exp5_path="ch5/sample_data/教育訓練成效.csv"
 
 ch5sample.exp1<-read_csv(ch5sample.exp1_path,col_names=TRUE)
 ch5sample.exp2<-read_csv(ch5sample.exp2_path,col_names=TRUE)
 ch5sample.exp3<-read_csv(ch5sample.exp3_path,col_names=TRUE)
 ch5sample.exp4<-read_csv(ch5sample.exp4_path,col_names=TRUE)
+ch5sample.exp5<-read_csv(ch5sample.exp5_path,col_names=TRUE)
 
 ###############################################################################
 name<-c("Alice","Bob","Roddy","Eddie","William",
@@ -814,7 +815,7 @@ ggplot(hypo_test.exp1) +
     annotate("text", x=sample.m, y=dnorm(sample.m, mean=sample.m, sd=sd.est)*1.04, parse=T, size=6,
              label="bar(x)") +
     annotate("text", x=popu.m, y=dnorm(popu.m, mean=popu.m, sd=sd.est)*1.04, parse=T, size=6,
-             label="'H'*scriptscriptstyle(0)*' : '*mu")
+             label="'H'*scriptscriptstyle(0)*' : '*mu>=mu*scriptscriptstyle(0)")
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
@@ -862,7 +863,7 @@ ggplot(hypo_test.exp2) +
     annotate("text", x=sample.m, y=dnorm(sample.m, mean=sample.m, sd=sd.est)*1.04, parse=T, size=6,
              label="bar(x)") +
     annotate("text", x=est.m, y=dnorm(est.m, mean=est.m, sd=sd.est)*1.04, parse=T, size=6,
-             label="'H'*scriptscriptstyle(0)*' : '*mu")
+             label="'H'*scriptscriptstyle(0)*' : '*mu*' = 40'")
 
 ###############################################################################
 #兩母體的假設檢定與估計
@@ -959,6 +960,16 @@ ggplot(soft_test) +
              label="bar(x)*' = '*mu*scriptscriptstyle(1)*' - '*mu*scriptscriptstyle(2)") +
     annotate("text", x=two_popu.m, y=dnorm(two_popu.m, mean=two_popu.m, sd=est.sd)*1.04, parse=T, size=6,
              label="'H'*scriptscriptstyle(0)*' : '*mu*scriptscriptstyle(1)*' - '*mu*scriptscriptstyle(2)<=0")
+
+###############################################################################
+#母體比例檢定
+#
+ch5sample.exp5<-read_csv(ch5sample.exp5_path,col_names=TRUE)
+propo.yse<-count(filter(ch5sample.exp5,是否有參加教育訓練=="是"))$n
+propo.tatal<-length(ch5sample.exp5$"是否有參加教育訓練")
+propo.yse/propo.tatal
+binom.test(propo.yse,propo.tatal,p=0.3,alternative="less")
+
 
 
 

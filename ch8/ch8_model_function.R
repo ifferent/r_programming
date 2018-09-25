@@ -50,10 +50,25 @@ check_data_fft_point <- function(x,ref_data)
     else return(x)
 }
 
-make_coh_test_report <- function(data, data.name, feq.sampling, feq.obs=NULL)
+set_coh_output_level<-function(coh_data, level)
 {
-    n  <- length(unlist(data.name))
-    n1 <- length(data.name)
+    n<-length(coh_data)
+    index<-(coh_data[2:n]<level)
+    for(i in seq_along(coh_data))
+    {
+        if(i!=1)
+        {
+            coh_data[[i]][index[,i-1]]<-NA
+        }
+    }
+    
+    return(coh_data)
+}
+
+make_coh_test_report <- function(coh_data, coh_data.name, feq.sampling, feq.obs=NULL)
+{
+    n  <- length(unlist(coh_data.name))
+    n1 <- length(coh_data.name)
     n2 <- n/n1
     n.sampling <- round(feq.sampling/2,0)
     
@@ -78,14 +93,14 @@ make_coh_test_report <- function(data, data.name, feq.sampling, feq.obs=NULL)
             {
                 report<- report %>%
                     mutate(
-                        !!(data.name[[i]][[j]]):=(data[[i]][[j]][,2])  
+                        !!(coh_data.name[[i]][[j]]):=(coh_data[[i]][[j]][,2])  
                     )
             }
             else
             {
                 report<- report %>%
                     mutate(
-                        !!(data.name[[i]][[j]]):=(data[[i]][[j]][feq.obs,2])  
+                        !!(coh_data.name[[i]][[j]]):=(coh_data[[i]][[j]][feq.obs,2])  
                     )
             }
         }
@@ -189,7 +204,7 @@ gen_fft_order <- function(df, write2csv=FALSE, path=NULL)
 coh_test<-function(df1, df2, 
                    feq.sampling=NULL, feq.obs=NULL,
                    ...,
-                   low.bound=0,plot=FALSE)
+                   coh_level=0,plot=FALSE)
 {
     if(!is.data.frame(df1)||!is.data.frame(df2))
         return("輸入必須是data frame")
@@ -224,8 +239,19 @@ coh_test<-function(df1, df2,
     df.name<-2:n2 %>% 
         map(~map(df1.name,str_c,"to",df2.name[.]))
     
-    output<-make_coh_test_report(df.coh_total, df.name, 
-                                 feq.sampling=feq.sampling, feq.obs=feq.obs)
+    if(coh_level!=0)
+    {
+        output<-make_coh_test_report(df.coh_total, df.name, 
+                                     feq.sampling=feq.sampling, 
+                                     feq.obs=feq.obs) %>%
+            set_coh_output_level(level=coh_level)
+    }
+    else
+    {
+        output<-make_coh_test_report(df.coh_total, df.name, 
+                                     feq.sampling=feq.sampling, 
+                                     feq.obs=feq.obs)
+    }
     
     output
 }

@@ -50,6 +50,50 @@ check_data_fft_point <- function(x,ref_data)
     else return(x)
 }
 
+make_coh_test_report <- function(data, data.name, feq.sampling, feq.obs=NULL)
+{
+    n  <- length(unlist(data.name))
+    n1 <- length(data.name)
+    n2 <- n/n1
+    n.sampling <- round(feq.sampling/2,0)
+    
+    if(is.null(feq.obs))
+    {
+        report<-tibble(
+            "頻率"=1:n.sampling
+        )
+    }
+    else
+    {
+        report<-tibble(
+            "頻率" = feq.obs
+        )
+    }
+    
+    for( i in 1:n1)
+    {
+        for( j in 1:n2)
+        {
+            if(is.null(feq.obs))
+            {
+                report<- report %>%
+                    mutate(
+                        !!(data.name[[i]][[j]]):=(data[[i]][[j]][,2])  
+                    )
+            }
+            else
+            {
+                report<- report %>%
+                    mutate(
+                        !!(data.name[[i]][[j]]):=(data[[i]][[j]][feq.obs,2])  
+                    )
+            }
+        }
+    }
+    
+    return(report)
+}
+
 gen_fft_data <- function(df, point=NULL, na.rm=FALSE)
 {
     if(!is.data.frame(df))
@@ -141,3 +185,48 @@ gen_fft_order <- function(df, write2csv=FALSE, path=NULL)
     }
     df.fft_order
 }
+
+coh_test<-function(df1, df2, 
+                   feq.sampling=NULL, feq.obs=NULL,
+                   ...,
+                   low.bound=0,plot=FALSE)
+{
+    if(!is.data.frame(df1)||!is.data.frame(df2))
+        return("輸入必須是data frame")
+    
+    if((names(df1)[1]!="時間點")||(names(df2)[1]!="時間點"))
+        return("非分析標準格式")
+    
+    if((as.integer(feq.sampling)<feq.sampling) ||
+       is.null(feq.sampling))
+    {    
+        if(is.null(feq.sampling))
+            feq.sampling = length(df1$時間點)
+        else
+            return("頻率必須是整數")
+    }
+    if((as.integer(feq.obs)<feq.obs) ||
+       is.null(feq.obs))
+    {
+        if(!is.null(feq.obs))
+            return("頻率必須是整數")
+    }
+    
+    n1<-length(df1)
+    df1.name <- names(df1[2:n1])
+    n2<-length(df2)
+    df2.name <- names(df2)
+    
+    df.wave1 <- df1[2:n1]
+    
+    df.coh_total<-2:n2 %>%
+        map(~map(df.wave1, coh, wave2=df2[.], f=feq.sampling, plot=F))
+    df.name<-2:n2 %>% 
+        map(~map(df1.name,str_c,"to",df2.name[.]))
+    
+    output<-make_coh_test_report(df.coh_total, df.name, 
+                                 feq.sampling=feq.sampling, feq.obs=feq.obs)
+    
+    output
+}
+

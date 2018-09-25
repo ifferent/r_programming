@@ -38,3 +38,15 @@ if(!require(BSDA))
 {
     install.packages("BSDA")
 }
+if(!require(magrittr))
+{
+    install.packages("magrittr")
+}
+if(!require(stringr))
+{
+    install.packages("stringr")
+}
+if(!require(seewave))
+{
+    install.packages("seewave")
+}

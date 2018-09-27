@@ -51,3 +51,13 @@ down_interval<-sqrt(((n-1)*v)/qchisq(0.025, df=n-1))
 #  變異數區間: 4.67<=6.008<=8.428 
 ggplot(quarter_return,aes(x=季,y=投報率,fill=季)) +
     geom_boxplot()
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########單一母體變異數檢定##########
+#變異數20ppm =>0.00002
+sample_var<-0.000029
+sigma_var <-0.00002
+n<-30
+chi_sat<-((n-1)*sample_var)/sigma_var
+pchisq(chi_sat,df=n-1)
+

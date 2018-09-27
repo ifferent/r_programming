@@ -95,7 +95,16 @@ summary(method_est.aov)
 ggplot(method_est,aes(x=方法,y=組裝時間,fill=方法)) +
     geom_boxplot()
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########多重比較程序##########
 
+LSD_resault<-LSD.test(method_est.aov, "方法", 
+                      DFerror=116, MSerror=356.1); LSD_resault
 
+pairwise.t.test(method_est$"組裝時間", method_est$"方法")#兩兩均值比較
+TukeyHSD(method_est.aov)
+
+ggplot(method_est1,aes(sample=A)) + 
+    geom_qq() + geom_qq_line(colour="blue", size=0.8)
 
 

@@ -35,9 +35,11 @@ library(ggplot2)
 
 ch6sample.exp1_path="ch6/sample_data/基金投報率.csv"
 ch6sample.exp2_path="ch6/sample_data/產品製程改善.csv"
+ch6sample.exp3_path="ch6/sample_data/披薩店銷售額.csv"
 
 ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
 ch6sample.exp2<-read_csv(ch6sample.exp2_path, col_names=TRUE)
+ch6sample.exp3<-read_csv(ch6sample.exp3_path, col_names=TRUE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########單一母體變異數推論##########
@@ -106,5 +108,31 @@ TukeyHSD(method_est.aov)
 
 ggplot(method_est1,aes(sample=A)) + 
     geom_qq() + geom_qq_line(colour="blue", size=0.8)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########簡單線性迴歸##########
+reg_y<-ch6sample.exp3$`銷售額(季)`
+reg_x<-ch6sample.exp3$`學生人數(千人)`
+plot_data<-lm(reg_y~reg_x)
+summary(plot_data)
+
+predict(plot_data,interval="confidence",level=0.95)
+predict(plot_data,data.frame(reg_x=10),interval="confidence",level=0.95)
+predict(plot_data,data.frame(reg_x=10),interval="prediction",level=0.95)
+
+plot_data$fitted.values
+anova(plot_data)
+
+plot(reg_y~reg_x,data=ch6sample.exp3)
+abline(plot_data)
+
+ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) + 
+    geom_point(size=2,colour="blue") +
+    geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
+
+ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) + 
+    geom_point(size=2,colour="blue") +
+    geom_smooth(se=T,span=10,colour="white") +
+    geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
 
 

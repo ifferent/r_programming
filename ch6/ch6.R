@@ -73,3 +73,29 @@ mach2_var<-var(ch6sample.exp2$機器2,na.rm=T);mach2_var
 var.test(mach1,mach2,alternative="two.sided")
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########變異數分析(ANOVA)##########
+
+Method_A<-sample(rnorm(1000,mean=62,sd=15),30)
+Method_B<-sample(rnorm(1000,mean=60,sd=21),30)
+Method_C<-sample(rnorm(1000,mean=68,sd=23),30)
+Method_D<-sample(rnorm(1000,mean=59,sd=18),30)
+
+method_est1<-tibble(
+    "A"=Method_A,
+    "B"=Method_B,
+    "C"=Method_C,
+    "D"=Method_D
+)
+
+method_est<-gather(method_est1, names(method_est1), key="方法", value="組裝時間")
+
+method_est.aov<-aov(組裝時間~方法,data=method_est);method_est.aov
+summary(method_est.aov)
+ggplot(method_est,aes(x=方法,y=組裝時間,fill=方法)) +
+    geom_boxplot()
+
+
+
+
+

@@ -34,8 +34,10 @@ library(ggplot2)
 ################################檔案載入與設定#################################
 
 ch6sample.exp1_path="ch6/sample_data/基金投報率.csv"
+ch6sample.exp2_path="ch6/sample_data/產品製程改善.csv"
 
 ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
+ch6sample.exp2<-read_csv(ch6sample.exp2_path, col_names=TRUE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########單一母體變異數推論##########
@@ -60,4 +62,14 @@ sigma_var <-0.00002
 n<-30
 chi_sat<-((n-1)*sample_var)/sigma_var
 pchisq(chi_sat,df=n-1)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########兩母體變異數檢定##########
+mach1<-ch6sample.exp2$機器1
+mach2<-ch6sample.exp2$機器2
+mach1_var<-var(ch6sample.exp2$機器1);mach1_var
+mach2_var<-var(ch6sample.exp2$機器2,na.rm=T);mach2_var
+
+var.test(mach1,mach2,alternative="two.sided")
+
 

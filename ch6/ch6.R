@@ -106,33 +106,59 @@ LSD_resault<-LSD.test(method_est.aov, "方法",
 pairwise.t.test(method_est$"組裝時間", method_est$"方法")#兩兩均值比較
 TukeyHSD(method_est.aov)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########繪製Q-Q 圖##########
+#@@@ base 系統
+par(mfrow=c(2,2), cex=0.8, cex.main=0.7)
+qqnorm(method_est1$A, main="Method A",col="red")
+qqline(method_est1$A,col="red")
+qqnorm(method_est1$B, main="Method B",col="blue")
+qqline(method_est1$B,col="blue")
+qqnorm(method_est1$C, main="Method C",col="green")
+qqline(method_est1$C,col="green")
+qqnorm(method_est1$D, main="Method D")
+qqline(method_est1$D)
+
+#@@@ ggplot2 系統
 ggplot(method_est1,aes(sample=A)) + 
     geom_qq() + geom_qq_line(colour="blue", size=0.8)
+
+ggplot(method_est.aov,aes(sample=組裝時間,colour=方法)) + 
+    geom_qq() + geom_qq_line(size=0.8) +
+    facet_wrap(~方法)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########簡單線性迴歸##########
 reg_y<-ch6sample.exp3$`銷售額(季)`
 reg_x<-ch6sample.exp3$`學生人數(千人)`
-plot_data<-lm(reg_y~reg_x)
-summary(plot_data)
+regress_data<-lm(reg_y~reg_x);regress_data
+summary(regress_data)
 
-predict(plot_data,interval="confidence",level=0.95)
-predict(plot_data,data.frame(reg_x=10),interval="confidence",level=0.95)
-predict(plot_data,data.frame(reg_x=10),interval="prediction",level=0.95)
+#@@@ 信賴區間
+predict(regress_data,interval="confidence",level=0.95)
 
-plot_data$fitted.values
-anova(plot_data)
+#@@@ 預測
+pred_data<- tibble(
+    reg_x=c(3,5,7,11,20)
+)
+predict(regress_data,data.frame(reg_x=10),interval="confidence",level=0.95)
+predict(regress_data,newdata=pred_data,interval="prediction",level=0.95)
 
+
+
+#@@@ base 系統
+par(mfrow=c(1,2))
 plot(reg_y~reg_x,data=ch6sample.exp3)
-abline(plot_data)
+abline(regress_data,col="red")
+plot(regress_data,which=1)
 
+#@@@ ggplot2 系統
 ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) + 
     geom_point(size=2,colour="blue") +
     geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
 
 ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) + 
     geom_point(size=2,colour="blue") +
-    geom_smooth(se=T,span=10,colour="white") +
+    geom_smooth(se=T,span=10,colour="red")# +
     geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
-
 

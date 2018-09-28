@@ -36,10 +36,14 @@ library(ggplot2)
 ch6sample.exp1_path="ch6/sample_data/基金投報率.csv"
 ch6sample.exp2_path="ch6/sample_data/產品製程改善.csv"
 ch6sample.exp3_path="ch6/sample_data/披薩店銷售額.csv"
+ch6sample.exp4_path="ch6/sample_data/貨運公司資料.csv"
+ch6sample.exp5_path="ch6/sample_data/維修紀錄.csv"
 
 ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
 ch6sample.exp2<-read_csv(ch6sample.exp2_path, col_names=TRUE)
 ch6sample.exp3<-read_csv(ch6sample.exp3_path, col_names=TRUE)
+ch6sample.exp4<-read_csv(ch6sample.exp4_path, col_names=TRUE)
+ch6sample.exp5<-read_csv(ch6sample.exp5_path, col_names=TRUE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########單一母體變異數推論##########
@@ -144,8 +148,6 @@ pred_data<- tibble(
 predict(regress_data,data.frame(reg_x=10),interval="confidence",level=0.95)
 predict(regress_data,newdata=pred_data,interval="prediction",level=0.95)
 
-
-
 #@@@ base 系統
 par(mfrow=c(1,2))
 plot(reg_y~reg_x,data=ch6sample.exp3)
@@ -161,4 +163,29 @@ ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) +
     geom_point(size=2,colour="blue") +
     geom_smooth(se=T,span=10,colour="red")# +
     geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########複迴歸##########
+dri_y<-ch6sample.exp4$行駛時間
+dri_x1<-ch6sample.exp4$行駛哩程數
+dri_x2<-ch6sample.exp4$送貨批數
+    
+dri_data<-lm(dri_y~dri_x1+dri_x2);dri_data
+summary(dri_data)
+anova(dri_data)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########虛擬變數##########
+ch6sample.exp5$維修類型<-ifelse(ch6sample.exp5$"維修類型"=="機電型", 1, 0)
+fix_recoder_y<-ch6sample.exp5$"維修所需時間"
+fix_recoder_x1<-ch6sample.exp5$`距離上次叫修時間(月)`
+fix_recoder_x2<-ch6sample.exp5$"維修類型"
+fix_recoder_data<-lm(fix_recoder_y~fix_recoder_x1+fix_recoder_x2);fix_recoder_data
+
+ggplot(ch6sample.exp5) + 
+    geom_point(aes(x=`距離上次叫修時間(月)`,y=維修所需時間,colour=維修類型),size=2) +
+    geom_abline(intercept=fix_recoder_data$coefficients[1],
+                slope=fix_recoder_data$coefficients[2],colour="red") +
+    geom_abline(intercept=fix_recoder_data$coefficients[1]+fix_recoder_data$coefficients[3],
+                slope=fix_recoder_data$coefficients[2],colour="green")
 

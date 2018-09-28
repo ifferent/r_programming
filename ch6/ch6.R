@@ -182,10 +182,11 @@ fix_recoder_x1<-ch6sample.exp5$`距離上次叫修時間(月)`
 fix_recoder_x2<-ch6sample.exp5$"維修類型"
 fix_recoder_data<-lm(fix_recoder_y~fix_recoder_x1+fix_recoder_x2);fix_recoder_data
 
-ggplot(ch6sample.exp5) + 
-    geom_point(aes(x=`距離上次叫修時間(月)`,y=維修所需時間,colour=維修類型),size=2) +
+ggplot(ch6sample.exp5,aes(x=`距離上次叫修時間(月)`,y=維修所需時間,colour=factor(維修類型))) + 
+    geom_point(size=2, position="jitter") +
     geom_abline(intercept=fix_recoder_data$coefficients[1],
                 slope=fix_recoder_data$coefficients[2],colour="red") +
     geom_abline(intercept=fix_recoder_data$coefficients[1]+fix_recoder_data$coefficients[3],
-                slope=fix_recoder_data$coefficients[2],colour="green")
+                slope=fix_recoder_data$coefficients[2],colour="green") +
+    scale_colour_discrete(name="維修類型", labels=c("機械型","機電型"))
 

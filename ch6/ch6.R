@@ -40,6 +40,7 @@ ch6sample.exp4_path="ch6/sample_data/貨運公司資料.csv"
 ch6sample.exp5_path="ch6/sample_data/維修紀錄.csv"
 ch6sample.exp6_path="ch6/sample_data/北市國營業稅資料.csv"
 ch6sample.exp7_path="ch6/sample_data/某公司銷售預測.csv"
+ch6sample.exp8_path="ch6/sample_data/百貨公司信用卡.csv"
 
 ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
 ch6sample.exp2<-read_csv(ch6sample.exp2_path, col_names=TRUE)
@@ -48,6 +49,7 @@ ch6sample.exp4<-read_csv(ch6sample.exp4_path, col_names=TRUE)
 ch6sample.exp5<-read_csv(ch6sample.exp5_path, col_names=TRUE)
 ch6sample.exp6<-read_csv(ch6sample.exp6_path, col_names=TRUE)
 ch6sample.exp7<-read_csv(ch6sample.exp7_path, col_names=TRUE)
+ch6sample.exp8<-read_csv(ch6sample.exp8_path, col_names=TRUE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########單一母體變異數推論##########
@@ -221,7 +223,15 @@ x7<-ch6sample.exp7$工作負荷
 model_origin<-lm(y~x1+x2+x3+x4+x5+x6+x7, data=ch6sample.exp7)
 model2<-step(model_origin)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########羅吉斯迴歸(logistic)##########z
+logi_y<-ch6sample.exp8$折價卷z
+logi_x1<-ch6sample.exp8$`年度開銷(千元)`
+logi_x2<-ch6sample.exp8$百貨公司信用卡
 
+logi_resault<-glm(logi_y~logi_x1+logi_x2, data=ch6sample.exp8, family=binomial)
+predic_data<-data.frame(logi_x1=2,logi_x2=0)
+predict.glm(logi_resault,type="response",newdata=predic_data)
 
 
 

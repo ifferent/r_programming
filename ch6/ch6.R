@@ -83,7 +83,6 @@ var.test(mach1,mach2,alternative="two.sided")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########變異數分析(ANOVA)##########
-
 Method_A<-sample(rnorm(1000,mean=62,sd=15),30)
 Method_B<-sample(rnorm(1000,mean=60,sd=21),30)
 Method_C<-sample(rnorm(1000,mean=68,sd=23),30)
@@ -105,7 +104,6 @@ ggplot(method_est,aes(x=方法,y=組裝時間,fill=方法)) +
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########多重比較程序##########
-
 LSD_resault<-LSD.test(method_est.aov, "方法", 
                       DFerror=116, MSerror=356.1); LSD_resault
 
@@ -159,12 +157,12 @@ plot(regress_data,which=1)
 #@@@ ggplot2 系統
 ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) + 
     geom_point(size=2,colour="blue") +
-    geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
+    geom_abline(intercept=regress_data$coefficients[1],
+                slope=regress_data$coefficients[2],colour="red")
 
 ggplot(ch6sample.exp3,aes(x=`學生人數(千人)`,y=`銷售額(季)`)) + 
     geom_point(size=2,colour="blue") +
-    geom_smooth(se=T,span=10,colour="red")# +
-    geom_abline(intercept=plot_data$coefficients[1],slope=plot_data$coefficients[2],colour="red")
+    geom_smooth(method=lm, formula=y~x, colour="red")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########複迴歸##########

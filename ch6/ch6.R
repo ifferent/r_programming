@@ -38,12 +38,14 @@ ch6sample.exp2_path="ch6/sample_data/產品製程改善.csv"
 ch6sample.exp3_path="ch6/sample_data/披薩店銷售額.csv"
 ch6sample.exp4_path="ch6/sample_data/貨運公司資料.csv"
 ch6sample.exp5_path="ch6/sample_data/維修紀錄.csv"
+ch6sample.exp6_path="ch6/sample_data/北市國營業稅資料.csv"
 
 ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
 ch6sample.exp2<-read_csv(ch6sample.exp2_path, col_names=TRUE)
 ch6sample.exp3<-read_csv(ch6sample.exp3_path, col_names=TRUE)
 ch6sample.exp4<-read_csv(ch6sample.exp4_path, col_names=TRUE)
 ch6sample.exp5<-read_csv(ch6sample.exp5_path, col_names=TRUE)
+ch6sample.exp6<-read_csv(ch6sample.exp6_path, col_names=TRUE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########單一母體變異數推論##########
@@ -189,4 +191,20 @@ ggplot(ch6sample.exp5,aes(x=`距離上次叫修時間(月)`,y=維修所需時間
     geom_abline(intercept=fix_recoder_data$coefficients[1]+fix_recoder_data$coefficients[3],
                 slope=fix_recoder_data$coefficients[2],colour="green") +
     scale_colour_discrete(name="維修類型", labels=c("機械型","機電型"))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########非線性變數##########
+taipei_x<-ch6sample.exp6$`公司家數(千家)`
+taipei_y<-ch6sample.exp6$`營業稅年度總稅收(百萬元)`
+taipei_busi_tax<-lm(taipei_y~taipei_x+I(taipei_x^2))
+summary(taipei_busi_tax)
+pre_data<-data.frame(taipei_x=c(169:173))
+predict(taipei_busi_tax,newdata=pre_data,interval="prediction")
+
+plot(taipei_y~taipei_x,data=ch6sample.exp6)
+curve(taipei_busi_tax,col="red")
+
+ggplot(ch6sample.exp6,aes(x=`公司家數(千家)`,y=`營業稅年度總稅收(百萬元)`,colour=factor(year)))+
+  geom_point()+geom_smooth(colour="red",method=lm,formula=y~x+I(x^2))
+
 

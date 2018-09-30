@@ -39,6 +39,7 @@ ch6sample.exp3_path="ch6/sample_data/披薩店銷售額.csv"
 ch6sample.exp4_path="ch6/sample_data/貨運公司資料.csv"
 ch6sample.exp5_path="ch6/sample_data/維修紀錄.csv"
 ch6sample.exp6_path="ch6/sample_data/北市國營業稅資料.csv"
+ch6sample.exp7_path="ch6/sample_data/某公司銷售預測.csv"
 
 ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
 ch6sample.exp2<-read_csv(ch6sample.exp2_path, col_names=TRUE)
@@ -46,6 +47,7 @@ ch6sample.exp3<-read_csv(ch6sample.exp3_path, col_names=TRUE)
 ch6sample.exp4<-read_csv(ch6sample.exp4_path, col_names=TRUE)
 ch6sample.exp5<-read_csv(ch6sample.exp5_path, col_names=TRUE)
 ch6sample.exp6<-read_csv(ch6sample.exp6_path, col_names=TRUE)
+ch6sample.exp7<-read_csv(ch6sample.exp7_path, col_names=TRUE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########單一母體變異數推論##########
@@ -204,5 +206,22 @@ curve(taipei_busi_tax,col="red")
 
 ggplot(ch6sample.exp6,aes(x=`公司家數(千家)`,y=`營業稅年度總稅收(百萬元)`,colour=factor(year)))+
   geom_point()+geom_smooth(colour="red",method=lm,formula=y~x+I(x^2))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##########逐步迴歸##########
+y<-ch6sample.exp7$業務總銷售額
+x1<-ch6sample.exp7$業務服務時間
+x2<-ch6sample.exp7$市場潛力
+x3<-ch6sample.exp7$廣告費用
+x4<-ch6sample.exp7$市場佔有率
+x5<-ch6sample.exp7$市場占有率變化
+x6<-ch6sample.exp7$業務的戶數z
+x7<-ch6sample.exp7$工作負荷
+
+model_origin<-lm(y~x1+x2+x3+x4+x5+x6+x7, data=ch6sample.exp7)
+model2<-step(model_origin)
+
+
+
 
 

@@ -38,3 +38,11 @@ if(!require(BSDA))
 {
     install.packages("BSDA")
 }
+if(!require(zoo))
+{
+    install.packages("zoo")
+}
+if(!require(xts))
+{
+    install.packages("xts")
+}

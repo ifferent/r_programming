@@ -27,10 +27,16 @@ library(ggplot2)
 ch7sample.exp1_path="ch7/sample_data/日期時間表格範例.csv"
 ch7sample.exp2_path="ch7/sample_data/中華電信股價(日).csv"
 ch7sample.exp3_path="ch7/sample_data/中華電信股價(單日).csv"
+ch7sample.exp4_path="ch7/sample_data/CPI_總指數.csv"
+ch7sample.exp5_path="ch7/sample_data/CPI_房租.csv"
+ch7sample.exp6_path="ch7/sample_data/CPI_娛樂費用.csv"
 
 ch7sample.exp1<-read_csv(ch7sample.exp1_path, col_names=TRUE)
 ch7sample.exp2<-read_csv(ch7sample.exp2_path, col_names=TRUE)
 ch7sample.exp3<-read_csv(ch7sample.exp3_path, col_names=TRUE)
+ch7sample.exp4<-read_csv(ch7sample.exp4_path, col_names=TRUE)
+ch7sample.exp5<-read_csv(ch7sample.exp5_path, col_names=TRUE)
+ch7sample.exp6<-read_csv(ch7sample.exp6_path, col_names=TRUE)
 
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #### 時間與日期的建立與處理
@@ -92,3 +98,51 @@ hms("18:22:34")+dminutes(18) #沒辦法直接加時間
 
 hms("18:22:34")+minutes(18)
 hms("18:22:34")+hours(18)
+
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#### 使用zoo 
+dates<-as.Date(c("2018-09-05", "2018-09-06", "2018-09-07", 
+                 "2018-09-08", "2018-09-09", "2018-09-12", 
+                 "2018-09-13", "2018-09-14", "2018-09-15", "2018-09-16"))
+cht_daily.zoo<-zoo(ch7sample.exp2, dates)
+
+dates_2<-as.Date(c("2018-09-05"))+0:10
+cht_daily_2.zoo<-zoo(ch7sample.exp2, dates_2)
+
+dates_3<-as.Date(c("2018-09-05"))+c(0:4,7:11)
+cht_daily_3.zoo<-zoo(ch7sample.exp2, dates_3)
+
+dates_4<-as.Date(c("2018-09-05"))+0:19
+cht_daily_4.zoo<-zoo(ch7sample.exp2, dates_4)
+
+time_zoo<-ymd_hms(c("2018-10-12 9:00:00","2018-10-12 9:05:00","2018-10-12 9:10:00",
+                    "2018-10-12 9:15:00","2018-10-12 9:20:00","2018-10-12 9:25:00",
+                    "2018-10-12 9:30:00","2018-10-12 9:35:00","2018-10-12 9:40:00",
+                    "2018-10-12 9:45:00"))
+cht.time_zoo<-zoo(ch7sample.exp3, time_zoo)
+
+time_zoo2<-ymd_hms("2018-10-12 9:00:00") + dminutes(seq(0,45,5))
+cht.time_zoo2<-zoo(ch7sample.exp3, time_zoo2)
+
+lag(cht_daily_4.zoo,k=+1,na.pad=T)
+lag(cht_daily_4.zoo,k=+1,na.pad=T)
+
+diff(cht_daily.zoo, differences = 1)
+diff(cht_daily.zoo, differences = 2)
+#(2018-09-05 - 2018-09-07), (2018-09-06 - 2018-09-08) 
+diff(cht_daily.zoo, lag = 2, differences = 1)
+
+time_zoo3<-ymd_hms("2018-10-12 9:45:00") + dminutes(seq(5,50,5))
+cht.time_zoo3<-zoo(ch7sample.exp3, time_zoo3)
+
+merge(cht.time_zoo2,cht.time_zoo3)
+merge(cht.time_zoo2,cht.time_zoo3,all=T)
+
+cpi_time<-ymd("1982-01-01")+months(0:434)
+"cpi_總指數"<-zoo(ch7sample.exp4,cpi_time)
+"cpi_房租"<-zoo(ch7sample.exp5,cpi_time)
+"cpi_娛樂費用"<-zoo(ch7sample.exp6,cpi_time)
+
+merge(cpi_總指數,cpi_房租,cpi_娛樂費用)
+

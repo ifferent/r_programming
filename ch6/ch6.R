@@ -217,15 +217,16 @@ x2<-ch6sample.exp7$市場潛力
 x3<-ch6sample.exp7$廣告費用
 x4<-ch6sample.exp7$市場佔有率
 x5<-ch6sample.exp7$市場占有率變化
-x6<-ch6sample.exp7$業務的戶數z
+x6<-ch6sample.exp7$業務的戶數
 x7<-ch6sample.exp7$工作負荷
 
-model_origin<-lm(y~x1+x2+x3+x4+x5+x6+x7, data=ch6sample.exp7)
+model_origin<-lm(y~x1+x2+x3+x4+x5+x6+x7, 
+                 data=ch6sample.exp7)
 model2<-step(model_origin)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##########羅吉斯迴歸(logistic)##########z
-logi_y<-ch6sample.exp8$折價卷z
+logi_y<-ch6sample.exp8$折價卷
 logi_x1<-ch6sample.exp8$`年度開銷(千元)`
 logi_x2<-ch6sample.exp8$百貨公司信用卡
 

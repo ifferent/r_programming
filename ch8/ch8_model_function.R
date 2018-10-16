@@ -4,6 +4,7 @@ library(purrr)
 library(magrittr)
 library(stringr)
 library(tidyr)
+library(tibble)
 
 shift_point <- function(x, lag) {
     n <- length(x)
@@ -109,6 +110,62 @@ make_coh_test_report <- function(coh_data, coh_data.name, feq.sampling, feq.obs=
     return(report)
 }
 
+
+check_ref <- function(df, ref_index, pos)
+{
+    
+    new_ptr <- length(df)
+    df_index <- which(!is.na(df[[new_ptr]]))
+    now_ref_index <- ref_index[[pos]]
+    
+    ref_vec <- vector("character",length(df[[new_ptr]]))
+
+    for( i in seq_along(df_index))
+    {
+        if(df_index[i] == now_ref_index[i])
+        {
+            ref_vec[df_index[i]]<-"YES"
+        }
+        else
+        {
+            ref_vec[df_index[i]]<-"NO"
+        }
+    }
+    
+    ref_vec
+}
+
+
+make_cross_table_report <- function(df, ref_left=NULL, ref_right=NULL)
+{
+    
+    new_df <- select(df, 1)
+    
+    for( i in seq_along(df))
+    {
+        if(i!=1)
+        {
+            new_df <- mutate(new_df,
+                             !!(names(df)[i]):=df[[i]] 
+            )
+            left_table <- check_ref(new_df, ref_left,i-1)
+            right_table <- check_ref(new_df, ref_right,i-1)
+
+            left_name <- str_c(unlist(str_split(names(df)[i],"to"))[1],"(",(i-1),")","交叉比對")
+            right_name <- str_c(unlist(str_split(names(df)[i],"to"))[2],"(",(i-1),")","交叉比對")
+            
+            new_df <- mutate(new_df,
+                             !!(left_name):=left_table,
+                             !!(right_name):=right_table 
+            )
+            
+        }
+    }
+    
+    new_df
+    
+}
+
 gen_fft_data <- function(df, point=NULL, na.rm=FALSE)
 {
     if(!is.data.frame(df))
@@ -148,7 +205,7 @@ gen_fft_data <- function(df, point=NULL, na.rm=FALSE)
     df.fft
 }
 
-gen_fft_order <- function(df, write2csv=FALSE, path=NULL)
+gen_fft_order <- function(df, fft.order=10)
 {
     if(!is.data.frame(df))
         return("輸入必須是data frame")
@@ -163,8 +220,6 @@ gen_fft_order <- function(df, write2csv=FALSE, path=NULL)
     )
     
     point<-round(length(df$fft_index)/2,0)
-    print(length(df$fft_index))
-    print(point)
     
     for(i in (seq_along(df)-1))
     {
@@ -190,14 +245,6 @@ gen_fft_order <- function(df, write2csv=FALSE, path=NULL)
         }
     }
     
-    if(write2csv==TRUE)
-    {
-        if(is.null(path))
-        {
-            return("沒有輸出檔名、輸出路徑")
-        }
-        write_excel_csv(df.fft_order, path=path)
-    }
     df.fft_order
 }
 
@@ -255,4 +302,107 @@ coh_test<-function(df1, df2,
     
     output
 }
+
+gen_freqdom_cross_table<-function(df1, df2, df3=NULL, ..., filter_condi=NULL)
+{
+    
+    p_sel1<-2:length(df1) %>%
+        map(~which(df1[[.]]>=0.5))
+    
+    p_sel2<-df2 %>% 
+        select(ends_with("前十大週期"))
+    
+    if(!is.null(df3))
+    {
+        p_sel3<-df3 %>% 
+            select(ends_with("前十大週期"))
+    }
+    
+    if(filter_condi=="right_side")
+    {
+        p_cross_index.right<-cross_table.right(p_sel1,p_sel2)
+        #print(p_cross_index.right)
+    }
+    else if(filter_condi=="left_side")
+    {
+        p_cross_index.left<-cross_table.left(p_sel1,p_sel2)
+        #print(p_cross_index.left)
+    }
+    else if(filter_condi=="two_side")
+    {
+        p_cross_index.left<-cross_table.left(p_sel1,p_sel3)
+        p_cross_index.right<-cross_table.left(p_sel1,p_sel2)
+        #print(p_cross_index.right)
+        #print(p_cross_index.left)
+    }
+    else
+    {}
+
+    make_cross_table_report(df1, p_cross_index.left, p_cross_index.right)
+    
+}
+
+cross_table.right<-function(p1, p2)
+{
+    
+    cross_table_output<-vector("list",length(p1))
+    k<-1
+    
+    for(i in seq_along(p1))
+    {
+        for(j in seq_along(p1[[i]]))
+        {
+            
+            if(any(p2[[k]]==p1[[i]][j]))
+            {
+                cross_table_output[[i]][j]<-p1[[i]][j]
+            }
+            else
+            {
+                cross_table_output[[i]][j]<-0
+            }
+        }
+        
+        i_check<-i%%length(p2)
+        
+        if((i_check==1)&&(i!=1))
+        {
+            k<-k+1
+        }
+    }
+    
+    cross_table_output
+    
+}
+
+cross_table.left<-function(p1, p2)
+{
+    
+    cross_table_output<-vector("list",length(p1))
+    for(i in seq_along(p1))
+    {
+        for(j in seq_along(p2))
+        {
+            for(k in seq_along(p1[[i]]) )
+            {
+                if( any(p2[[j]]==p1[[i]][k]) )
+                {
+                    cross_table_output[[i]][k]<-p1[[i]][k]
+                }
+                else
+                {
+                    cross_table_output[[i]][k]<-0
+                }
+            }
+        }
+    }
+    
+    cross_table_output
+    
+}
+
+#cross_table.two_side<-function(p1, p2)
+#{
+
+#}
 

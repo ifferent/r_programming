@@ -196,3 +196,15 @@ cht.time_xts <- xts(ch7sample.exp3, time_zoo);cht.time_xts #較嚴格，會檢�
 
 #time_zoo2<-ymd_hms("2018-10-12 9:00:00") + dminutes(seq(0,45,5))
 cht.time_xts2 <- xts(ch7sample.exp3, time_zoo2)
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+########## 時間序列繪圖 ##########
+
+index(cht_daily.zoo) #取得時間點
+ggplot(cht_daily.zoo, aes(x=index(cht_daily.zoo), y=股價)) +
+    geom_point() + geom_line()
+
+ggplot(cht.time_zoo, aes(x=index(cht.time_zoo), y=股價)) +
+    geom_point() + geom_line()
+
+plot(cht_daily.zoo)

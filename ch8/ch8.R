@@ -24,21 +24,9 @@ source("common/function.R",encoding="utf-8") #將公用自訂函數載起來
 ###                                                                       ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
 
-library(readr)
-library(dplyr)
 library(tibble)
-library(tidyr)
-library(BSDA)
-library(agricolae)
-library(DescTools)
-library(ggplot2)
 
 ################################檔案載入與設定#################################
-
-ch6sample.exp1_path="ch6/sample_data/基金投報率.csv"
-
-
-ch6sample.exp1<-read_csv(ch6sample.exp1_path, col_names=TRUE)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,7 +51,7 @@ df$d <- (df$d - min(df$d, na.rm = TRUE)) /
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 rescale01 <- function(x) {
     (x - min(x, na.rm = TRUE)) / 
-    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+        (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
 }
 
 rescale01(df$a)
@@ -84,26 +72,14 @@ rescale02(df$b)
 rescale02(df$c)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-####迴圈
-df[[1]] #a
-df[[2]] #b
-df[[3]] #b
-df[[4]] #b
+####串列(list)
 
-for( i in 1:4)
-{
-    df[[i]] <- (df[[i]] - min(df[[i]], na.rm = TRUE)) / 
-        (max(df[[i]], na.rm = TRUE) - min(df[[i]], na.rm = TRUE))
-}
+x <- list(1, 2, 3)
 
-seq_along(df)
+x_named <- list(a = 1, b = 2, c = 3)
 
-output <- vector("list", length(df)) 
-for( i in seq_along(df))
-{
-    output[[i]] <- (df[[i]] - min(df[[i]], na.rm = TRUE)) / 
-        (max(df[[i]], na.rm = TRUE) - min(df[[i]], na.rm = TRUE))
-    output
-}
+x1 <- list(c(1, 2), c(3, 4))
+x2 <- list(list(1, 2), list(3, 4))
+x3 <- list(1, list(2, list(3)))
 
-
+a <- list(a = 1:3, b = "a string", c = pi, d = list(-1, -5))

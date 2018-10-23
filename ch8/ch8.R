@@ -83,3 +83,29 @@ x2 <- list(list(1, 2), list(3, 4))
 x3 <- list(1, list(2, list(3)))
 
 a <- list(a = 1:3, b = "a string", c = pi, d = list(-1, -5))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+####迴圈
+
+df[[1]] #a
+df[[2]] #b
+df[[3]] #b
+df[[4]] #b
+
+for( i in 1:4)
+{
+    df[[i]] <- (df[[i]] - min(df[[i]], na.rm = TRUE)) / 
+        (max(df[[i]], na.rm = TRUE) - min(df[[i]], na.rm = TRUE))
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+seq_along(df)
+
+output <- vector("list", length(df)) 
+for( i in seq_along(df))
+{
+    output[[i]] <- (df[[i]] - min(df[[i]], na.rm = TRUE)) / 
+        (max(df[[i]], na.rm = TRUE) - min(df[[i]], na.rm = TRUE))
+}
+output

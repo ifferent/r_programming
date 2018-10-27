@@ -291,3 +291,26 @@ taiwan_gdp.test_table <- merge(as.zoo(taiwan_gdp.dff1),taiwan_gdp.arIma)
 
 ggplot(taiwan_gdp.test_table,aes(x=index(taiwan_gdp.test_table)))+geom_line(aes(y=台灣GDP)) +
     geom_line(aes(y=x),colour="red") 
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+########## 預測 ##########
+forecast(taiwan_gdp, h=12)
+plot(forecast(taiwan_gdp, h=12))
+
+plot(forecast(taiwan_gdp.arIma, h=12))
+
+taiwan_gdp.HoltWinters<-HoltWinters(taiwan_gdp)
+plot(taiwan_gdp.HoltWinters)
+plot(forecast(taiwan_gdp.HoltWinters,h=12))
+
+plot(taiwan_gdp.HoltWinters,gamma=F)
+
+taiwan_gdp.SMA_n3<-SMA(taiwan_gdp,n=3)
+taiwan_gdp.SMA_n10<-SMA(taiwan_gdp,n=10)
+plot(taiwan_gdp.SMA_n3)
+plot(taiwan_gdp.SMA_n10)
+
+currency_time_serial.SMA_n3<-SMA(currency_time_serial.dff1,n=3)
+currency_time_serial.SMA_n10<-SMA(currency_time_serial.dff1,n=10)
+plot(currency_time_serial.SMA_n3)
+plot(currency_time_serial.SMA_n10)

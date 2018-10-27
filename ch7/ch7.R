@@ -263,3 +263,31 @@ ggplot(test_table2,aes(x=index(test_table2)))+geom_line(aes(y=`貨幣總計數-�
     geom_line(aes(y=x),colour="red") 
 
 summary(currency_time_serial.arIma_)
+
+###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+########## 使用ts ##########
+taiwan_gdp<-ts(ch7sample.exp8, frequency=4, start=c(1981,1))
+taiwan_gdp.decom<-decompose(taiwan_gdp)
+
+plot(taiwan_gdp.decom)
+
+adf.test(taiwan_gdp)
+pp.test(taiwan_gdp)
+
+taiwan_gdp.dff1<-diff(taiwan_gdp, differences = 1)
+adf.
+test(taiwan_gdp.dff1)
+pp.test(taiwan_gdp.dff1)
+
+acf(coredata(taiwan_gdp.dff1))
+pacf(coredata(taiwan_gdp.dff1))
+
+auto.arima(coredata(taiwan_gdp))
+taiwan_gdp.arIma_<-Arima(coredata(taiwan_gdp.dff1),order=c(3,0,3))
+summary(taiwan_gdp.arIma_)
+
+taiwan_gdp.arIma<-zoo(as.zoo(taiwan_gdp.arIma_$fitted),index(as.zoo(taiwan_gdp.dff1)))
+taiwan_gdp.test_table <- merge(as.zoo(taiwan_gdp.dff1),taiwan_gdp.arIma)
+
+ggplot(taiwan_gdp.test_table,aes(x=index(taiwan_gdp.test_table)))+geom_line(aes(y=台灣GDP)) +
+    geom_line(aes(y=x),colour="red") 

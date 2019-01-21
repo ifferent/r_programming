@@ -38,3 +38,7 @@ if(!require(BSDA))
 {
     install.packages("BSDA")
 }
+if(!require(agricolae))
+{
+    install.packages("agricolae")
+}

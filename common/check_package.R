@@ -42,3 +42,11 @@ if(!require(agricolae))
 {
     install.packages("agricolae")
 }
+if(!require(zoo))
+{
+    install.packages("zoo")
+}
+if(!require(xts))
+{
+    install.packages("xts")
+}

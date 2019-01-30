@@ -50,3 +50,12 @@ if(!require(xts))
 {
     install.packages("xts")
 }
+if(!require(tseries))
+{
+    install.packages("tseries")
+}
+if(!require(forecast))
+{
+    install.packages("forecast")
+}
+
